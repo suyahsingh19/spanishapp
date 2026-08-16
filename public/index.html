@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>En Voz Alta — Spanish, Out Loud</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root{
+  --bg: #1B1A2E;
+  --bg-deep: #14132455;
+  --surface: #242341;
+  --surface-raised: #2C2B4D;
+  --line: #3A3966;
+  --text: #F2EDE4;
+  --text-dim: #A9A4C0;
+  --text-faint: #726F94;
+  --gold: #E3A548;
+  --clay: #C1502E;
+  --teal: #3FA796;
+  --err: #D9615F;
+  --radius: 14px;
+  --serif: 'Fraunces', serif;
+  --sans: 'Inter', sans-serif;
+  --mono: 'IBM Plex Mono', monospace;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background: radial-gradient(ellipse 120% 80% at 50% -10%, #2A2850 0%, var(--bg) 55%);
+  color: var(--text);
+  font-family: var(--sans);
+  min-height: 100vh;
+  line-height: 1.5;
+}
+::selection{ background: var(--gold); color: #1B1A2E; }
+:focus-visible{ outline: 2px solid var(--gold); outline-offset: 2px; }
+
+.wrap{ max-width: 980px; margin: 0 auto; padding: 48px 24px 80px; }
+
+.sync-note{
+  display:flex; align-items:center; gap:8px; font-family: var(--mono); font-size: 11.5px;
+  color: var(--text-faint); margin: -8px 0 16px;
+}
+.sync-dot{ width:7px; height:7px; border-radius:50%; background: var(--teal); flex-shrink:0; }
+.sync-dot.off{ background: var(--err); }
+
+.settings-panel{
+  background: var(--surface); border: 1px solid var(--gold); border-radius: 14px;
+  padding: 22px; margin-bottom: 24px; text-align: left;
+}
+.settings-panel input{ width:100%; }
+.settings-panel code{ font-family: var(--mono); font-size: 12px; }
+
+@media (max-width: 600px){
+  .wrap{ padding: 28px 16px 60px; }
+  h1.title{ font-size: clamp(30px, 9vw, 40px); }
+  .thesis{ font-size: 15.5px; }
+  .gapmeter{ gap: 18px; }
+  .gap-col{ min-width: 130px; }
+  .rail{ grid-template-columns: 1fr 1fr; gap: 10px; }
+  .station{ padding: 14px 12px; }
+  .station .name{ font-size: 16px; }
+  .station .desc{ font-size: 11.5px; }
+  .panel{ padding: 20px 16px; border-radius: 14px; }
+  .prompt-word{ font-size: 30px; }
+  .g-sentence{ font-size: 17px !important; }
+  .btn, .rate-btn{ font-size: 14px; padding: 13px 14px; min-height: 44px; }
+  .btn.mic{ width: 100%; padding: 16px; }
+  .rate-row{ flex-direction: column; }
+  .rate-btn{ width: 100%; }
+  .dash{ grid-template-columns: 1fr 1fr; gap: 10px; }
+  .dash-num{ font-size: 24px; }
+  .timeline{ padding: 18px 14px; }
+  .tl-track{ flex-direction: column; align-items: stretch; }
+  .tl-track::before{ display:none; }
+  .tl-phase{ padding-left: 0; }
+}
+@media (hover: none){
+  .btn, .station, .rate-btn{ -webkit-tap-highlight-color: transparent; }
+}
+
+/* ---------- HERO ---------- */
+.hero{ padding: 8px 0 40px; border-bottom: 1px solid var(--line); margin-bottom: 36px; }
+.eyebrow{
+  font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 14px; display:flex; align-items:center; gap:10px;
+}
+.eyebrow::before{ content:''; width:16px; height:1px; background: var(--gold); display:inline-block; }
+h1.title{
+  font-family: var(--serif); font-optical-sizing: auto; font-weight: 600;
+  font-size: clamp(38px, 6vw, 60px); line-height: 1.02; margin: 0 0 18px; letter-spacing: -0.01em;
+}
+h1.title em{ font-style: italic; font-weight: 500; color: var(--clay); }
+.thesis{ font-size: 17px; color: var(--text-dim); max-width: 620px; margin: 0 0 22px; }
+.thesis strong{ color: var(--text); font-weight: 600; }
+
+.gapmeter{
+  display:flex; gap: 28px; flex-wrap: wrap; align-items: flex-end; margin-top: 28px;
+}
+.gap-col{ min-width: 220px; flex: 1; }
+.gap-label{ display:flex; justify-content: space-between; font-size: 12.5px; color: var(--text-dim); margin-bottom: 6px; font-family: var(--mono);}
+.gap-track{ height: 10px; border-radius: 6px; background: var(--surface); overflow: hidden; border:1px solid var(--line);}
+.gap-fill{ height: 100%; border-radius: 6px; transition: width 0.6s ease; }
+.gap-fill.rec{ background: linear-gradient(90deg, #6E6BA8, var(--gold)); }
+.gap-fill.prod{ background: linear-gradient(90deg, #6E6BA8, var(--teal)); }
+.gap-note{ font-size: 13px; color: var(--text-faint); margin-top: 12px; max-width: 480px; }
+
+/* ---------- STATION RAIL ---------- */
+.rail-heading{ font-family: var(--serif); font-size: 22px; font-weight: 600; margin: 0 0 4px; }
+.rail-sub{ color: var(--text-faint); font-size: 14px; margin: 0 0 18px; }
+
+.diff-toggle{ display:flex; gap: 8px; margin-bottom: 20px; }
+.diff-btn{
+  flex:1; background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+  padding: 12px 16px; text-align:left; color: var(--text-dim); font-family: var(--sans); font-weight: 600; font-size: 14px;
+  cursor: pointer; transition: all 0.15s ease;
+}
+.diff-btn .diff-sub{ display:block; font-weight: 400; font-size: 11.5px; color: var(--text-faint); margin-top: 3px; }
+.diff-btn:hover{ border-color: var(--gold); }
+.diff-btn.active{ background: var(--surface-raised); border-color: var(--teal); color: var(--text); box-shadow: 0 0 0 1px var(--teal) inset; }
+.diff-btn.active .diff-sub{ color: var(--teal); }
+.rail{ display:grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 40px; }
+@media (max-width: 900px){ .rail{ grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 760px){ .rail{ grid-template-columns: 1fr 1fr; } }
+.station{
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 18px 16px; cursor: pointer; text-align: left; color: var(--text); font-family: var(--sans);
+  transition: border-color 0.15s ease, transform 0.15s ease, background 0.15s ease;
+  position: relative; overflow: hidden;
+}
+.station:hover{ border-color: var(--gold); transform: translateY(-2px); }
+.station.active{ background: var(--surface-raised); border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold) inset; }
+.station .num{ font-family: var(--mono); font-size: 11px; color: var(--text-faint); display:block; margin-bottom: 10px; }
+.station .name{ font-family: var(--serif); font-size: 18px; font-weight: 600; display:block; margin-bottom: 4px; }
+.station .desc{ font-size: 12.5px; color: var(--text-dim); display:block; }
+.station .due{
+  position:absolute; top:14px; right:14px; font-family: var(--mono); font-size: 11px;
+  background: var(--clay); color: #fff; padding: 2px 7px; border-radius: 20px;
+}
+
+/* ---------- PANEL ---------- */
+.panel{
+  background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
+  padding: 32px; min-height: 320px; margin-bottom: 40px;
+}
+.panel-head{ display:flex; justify-content: space-between; align-items: baseline; margin-bottom: 22px; flex-wrap: wrap; gap: 10px;}
+.panel-title{ font-family: var(--serif); font-size: 24px; font-weight: 600; margin: 0; }
+.panel-progress{ font-family: var(--mono); font-size: 12.5px; color: var(--text-dim); }
+
+.card-stage{ text-align:center; padding: 20px 10px 8px; }
+.prompt-word{ font-family: var(--serif); font-size: 40px; font-weight: 600; margin: 6px 0; }
+.prompt-sub{ color: var(--text-dim); font-size: 14px; margin-bottom: 4px; }
+.prompt-example{ font-style: italic; color: var(--text-faint); font-size: 14px; margin-top: 14px; }
+
+.btn-row{ display:flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 26px; }
+button{ font-family: var(--sans); cursor:pointer; border: none; }
+.btn{
+  background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 10px;
+  padding: 11px 18px; font-size: 14px; font-weight: 600; transition: all 0.15s ease;
+}
+.btn:hover{ border-color: var(--gold); }
+.btn.primary{ background: var(--gold); color: #1B1A2E; border-color: var(--gold); }
+.btn.primary:hover{ filter: brightness(1.08); }
+.btn.ghost{ background: transparent; }
+.btn.mic{ background: var(--clay); color: #fff; border-color: var(--clay); padding: 14px 26px; font-size: 15px;}
+.btn.mic.recording{ background: var(--err); animation: pulse 1.2s infinite; }
+.btn:disabled{ opacity: 0.4; cursor: not-allowed; }
+@keyframes pulse{ 0%,100%{ box-shadow: 0 0 0 0 rgba(217,97,95,0.5);} 50%{ box-shadow: 0 0 0 10px rgba(217,97,95,0);} }
+
+.rate-row{ display:flex; gap: 8px; justify-content:center; margin-top: 24px; flex-wrap: wrap; }
+.rate-btn{ flex:1; min-width: 110px; border-radius: 10px; padding: 12px 10px; font-size: 13px; font-weight: 600; border: 1px solid var(--line); color: #fff;}
+.rate-btn.again{ background: #5A2D2D; } .rate-btn.again:hover{ background: var(--err); }
+.rate-btn.hard{ background: #5A4A2D; } .rate-btn.hard:hover{ background: var(--clay); }
+.rate-btn.good{ background: #2D4A4A; } .rate-btn.good:hover{ background: var(--teal); }
+.rate-btn.easy{ background: #2D4F3A; } .rate-btn.easy:hover{ background: #4FBE7A; }
+
+.answer-flip{ background: var(--bg); border: 1px dashed var(--line); border-radius: 12px; padding: 18px; margin: 18px auto 0; max-width: 420px; }
+
+textarea, input[type=text]{
+  width: 100%; background: var(--bg); border: 1px solid var(--line); border-radius: 10px;
+  color: var(--text); font-family: var(--sans); font-size: 15px; padding: 12px 14px; margin-top: 12px;
+}
+textarea:focus, input:focus{ border-color: var(--gold); }
+
+.diff-line{ font-size: 17px; margin-top: 16px; line-height: 1.9; }
+.diff-word{ padding: 1px 3px; border-radius: 4px; }
+.diff-word.ok{ background: rgba(63,167,150,0.18); color: var(--teal); }
+.diff-word.bad{ background: rgba(217,97,95,0.18); color: var(--err); text-decoration: line-through; }
+.diff-word.missing{ background: rgba(227,165,72,0.18); color: var(--gold); }
+
+.feedback{ margin-top: 14px; font-size: 13.5px; color: var(--text-dim); }
+.feedback.correct{ color: var(--teal); }
+.feedback.wrong{ color: var(--err); }
+
+.g-sentence{ font-size: 19px; text-align:center; margin: 18px 0 8px; font-family: var(--serif); }
+.g-blank{ display:inline-block; min-width: 90px; border-bottom: 2px solid var(--gold); }
+.g-hint{ text-align:center; color: var(--text-faint); font-size: 13px; margin-bottom: 16px; }
+
+/* ---------- DASHBOARD ---------- */
+.dash{ display:grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+@media (max-width: 760px){ .dash{ grid-template-columns: 1fr 1fr; } }
+.dash-card{ background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; }
+.dash-num{ font-family: var(--serif); font-size: 30px; font-weight: 600; color: var(--gold); }
+.dash-label{ font-size: 12px; color: var(--text-faint); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px;}
+
+/* ---------- OVERALL PROGRESS ---------- */
+.overall{ margin-bottom: 40px; }
+.overall-head{ display:flex; justify-content: space-between; align-items:baseline; margin-bottom: 10px; flex-wrap:wrap; gap:6px;}
+.overall-track{ height: 16px; border-radius: 10px; background: var(--surface); border: 1px solid var(--line); overflow: hidden; }
+.overall-fill{ height: 100%; border-radius: 10px; background: linear-gradient(90deg, var(--clay), var(--gold), var(--teal)); transition: width 0.6s ease; }
+.overall-caption{ font-size: 12.5px; color: var(--text-faint); margin-top: 8px; }
+
+/* ---------- TIMELINE ---------- */
+.timeline{ background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 26px 28px; margin-bottom: 40px; }
+.tl-track{ display:flex; gap: 0; margin-top: 20px; position: relative; }
+.tl-track::before{ content:''; position:absolute; top:15px; left:0; right:0; height:2px; background: var(--line); }
+.tl-phase{ flex:1; position: relative; padding: 0 10px 0 0; }
+.tl-dot{ width:30px; height:30px; border-radius:50%; background: var(--bg); border:2px solid var(--line); display:flex; align-items:center; justify-content:center; font-family: var(--mono); font-size:12px; color: var(--text-faint); position:relative; z-index:1; margin-bottom: 12px; }
+.tl-phase.done .tl-dot{ background: var(--teal); border-color: var(--teal); color: #0E1F1C; }
+.tl-phase.current .tl-dot{ background: var(--gold); border-color: var(--gold); color: #1B1A2E; box-shadow: 0 0 0 4px rgba(227,165,72,0.18); }
+.tl-name{ font-family: var(--serif); font-size: 15.5px; font-weight: 600; margin-bottom: 4px; }
+.tl-desc{ font-size: 12.5px; color: var(--text-faint); line-height:1.5; }
+.tl-when{ font-family: var(--mono); font-size: 10.5px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; display:block; }
+
+.verify-link{ display:inline-flex; align-items:center; gap:5px; font-family: var(--mono); font-size: 11.5px; color: var(--text-faint); text-decoration:none; margin-top: 14px; border-bottom: 1px dotted var(--text-faint); }
+.verify-link:hover{ color: var(--gold); border-color: var(--gold); }
+
+/* ---------- IMPROV ---------- */
+.improv-timer{ font-family: var(--mono); font-size: 44px; font-weight: 600; color: var(--gold); margin: 10px 0; }
+.improv-prompts{ list-style:none; padding:0; margin: 16px 0; text-align:left; max-width: 420px; margin-left:auto; margin-right:auto; }
+.improv-prompts li{ padding: 6px 0 6px 20px; position: relative; color: var(--text-dim); font-size: 14.5px; }
+.improv-prompts li::before{ content:'—'; position:absolute; left:0; color: var(--text-faint); }
+.transcript-box{ background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin-top: 18px; text-align:left; font-size: 15px; line-height: 1.7; min-height: 60px; }
+.improv-stats{ display:flex; gap: 10px; flex-wrap: wrap; justify-content:center; margin-top: 16px; }
+.stat-chip{ background: var(--bg); border: 1px solid var(--line); border-radius: 20px; padding: 6px 14px; font-family: var(--mono); font-size: 12.5px; color: var(--text-dim); }
+.stat-chip.hit{ border-color: var(--teal); color: var(--teal); }
+.self-rate{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top: 20px; }
+
+footer{ text-align:center; color: var(--text-faint); font-size: 12.5px; margin-top: 50px; font-family: var(--mono); }
+
+.backup-box{ margin-top: 16px; text-align: center; }
+.backup-panel{
+  background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+  padding: 20px; margin-top: 12px; text-align: left;
+}
+.backup-panel textarea{ width:100%; resize: vertical; }
+
+.hidden{ display:none !important; }
+.unsupported{ background: var(--bg); border: 1px solid var(--err); border-radius: 10px; padding: 14px 16px; color: var(--text-dim); font-size: 13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="eyebrow">Spanish · Production Practice</div>
+    <h1 class="title">Recognizing isn't <em>speaking</em>.</h1>
+    <p class="thesis">
+      600 days and Level 22 built a real skill: <strong>recognition</strong> — picking the right tile out of four,
+      matching a word to a picture. That skill doesn't transfer to <strong>production</strong> — pulling the word
+      out of nothing, hearing it at full speed, saying it back correctly. This session trains the second thing.
+      No streak, no gems — just retrieval, listening, and speaking, tracked honestly.
+    </p>
+    <div class="gapmeter">
+      <div class="gap-col">
+        <div class="gap-label"><span>Recognition (reading / choosing)</span><span id="recPct">—</span></div>
+        <div class="gap-track"><div class="gap-fill rec" id="recFill" style="width:0%"></div></div>
+      </div>
+      <div class="gap-col">
+        <div class="gap-label"><span>Production (recalling / speaking)</span><span id="prodPct">—</span></div>
+        <div class="gap-track"><div class="gap-fill prod" id="prodFill" style="width:0%"></div></div>
+      </div>
+    </div>
+    <p class="gap-note" id="gapNote">Complete a round in any station below to see where your gap actually is.</p>
+  </div>
+
+  <div class="sync-note" id="syncNote"><span class="sync-dot" id="syncDot"></span><span id="syncText">Checking sync status…</span><button class="btn ghost" id="settingsToggle" style="margin-left:auto;font-size:11px;padding:5px 12px;">Settings</button></div>
+
+  <div class="settings-panel hidden" id="settingsPanel">
+    <h3 style="font-family:var(--serif);font-size:18px;margin:0 0 6px;">Sync setup</h3>
+    <p class="prompt-sub" style="text-align:left;margin-bottom:14px;">
+      One-time setup. Enter the passcode you set on your server (the <code style="background:var(--bg);padding:2px 6px;border-radius:4px;">PASSCODE</code>
+      value from its environment config). Enter the same passcode on every device to keep progress in sync.
+    </p>
+    <input type="password" id="passcodeInput" placeholder="Passcode" autocomplete="off">
+    <div class="btn-row" style="justify-content:flex-start;margin-top:14px;">
+      <button class="btn primary" id="saveSettingsBtn">Connect</button>
+      <button class="btn ghost" id="clearSettingsBtn">Disconnect</button>
+    </div>
+    <div id="settingsMsg" style="margin-top:12px;"></div>
+  </div>
+
+  <div class="overall">
+    <div class="overall-head">
+      <h2 class="rail-heading" style="margin:0;">Program progress</h2>
+      <span class="panel-progress" id="overallPct">0%</span>
+    </div>
+    <div class="overall-track"><div class="overall-fill" id="overallFill" style="width:0%"></div></div>
+    <p class="overall-caption" id="overallCaption">Based on words mastered, sessions logged, and production accuracy.</p>
+  </div>
+
+  <div class="timeline">
+    <h2 class="rail-heading" style="margin:0;">Su ruta — a realistic 4-week arc</h2>
+    <p class="rail-sub" style="margin:4px 0 0;">This isn't a fixed calendar — it advances as you log sessions, not by the date. All four stations, including free-talk practice, work entirely inside this app — no outside material required to keep moving through the phases below.</p>
+    <div class="tl-track" id="tlTrack"></div>
+  </div>
+
+  <div>
+    <h2 class="rail-heading">Elige tu estación</h2>
+    <p class="rail-sub">Four modes, plus free talk. Rotate through 2–3 a day for 15–20 minutes — that beats one long Duolingo session.</p>
+    <div class="diff-toggle" id="diffToggle">
+      <button class="diff-btn" data-diff="easy">Fácil <span class="diff-sub">multiple choice, everyday words</span></button>
+      <button class="diff-btn" data-diff="hard">Difícil <span class="diff-sub">free recall, typed answers</span></button>
+    </div>
+    <div class="rail" id="rail">
+      <button class="station active" data-mod="vocab">
+        <span class="num">01</span><span class="name">Vocabulario</span>
+        <span class="desc">Word meanings, spaced repetition</span>
+        <span class="due hidden" id="dueVocab"></span>
+      </button>
+      <button class="station" data-mod="listen">
+        <span class="num">02</span><span class="name">Escucha</span>
+        <span class="desc">Train your ear</span>
+      </button>
+      <button class="station" data-mod="speak">
+        <span class="num">03</span><span class="name">Habla</span>
+        <span class="desc">Say it aloud, get scored</span>
+      </button>
+      <button class="station" data-mod="grammar">
+        <span class="num">04</span><span class="name">Gramática</span>
+        <span class="desc">Conjugate in context</span>
+      </button>
+      <button class="station" data-mod="improv">
+        <span class="num">05</span><span class="name">Improvisa</span>
+        <span class="desc">Free talk, no answer key</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="panel" id="panel"><!-- module renders here --></div>
+
+  <div>
+    <h2 class="rail-heading">Tu progreso real</h2>
+    <p class="rail-sub">Tracked in this app only — separate from your Duolingo streak, on purpose.</p>
+    <div class="dash">
+      <div class="dash-card"><div class="dash-num" id="statSessions">0</div><div class="dash-label">Sessions logged</div></div>
+      <div class="dash-card"><div class="dash-num" id="statMastered">0</div><div class="dash-label">Words mastered</div></div>
+      <div class="dash-card"><div class="dash-num" id="statDue">0</div><div class="dash-label">Cards due today</div></div>
+      <div class="dash-card"><div class="dash-num" id="statStreak">0</div><div class="dash-label">App-day streak</div></div>
+    </div>
+    <div class="backup-box">
+      <button class="btn ghost" id="backupToggle" style="font-size:12.5px;">Manual backup (use if auto-sync isn't working)</button>
+      <div class="backup-panel hidden" id="backupPanel">
+        <p class="prompt-sub" style="text-align:left;margin-bottom:10px;">If progress isn't carrying over between devices automatically, copy the code below on the device that has your progress, then paste it into the box on the other device and tap Load.</p>
+        <div class="btn-row" style="justify-content:flex-start;"><button class="btn" id="copyCodeBtn">Copy my progress code</button></div>
+        <textarea id="codeOut" readonly rows="3" style="margin-top:10px;font-family:var(--mono);font-size:11px;"></textarea>
+        <p class="prompt-sub" style="text-align:left;margin:16px 0 6px;">Paste a code from another device here:</p>
+        <textarea id="codeIn" rows="3" placeholder="Pega el código aquí..." style="font-family:var(--mono);font-size:11px;"></textarea>
+        <div class="btn-row" style="justify-content:flex-start;"><button class="btn primary" id="loadCodeBtn">Load this code</button></div>
+        <div id="backupMsg" style="margin-top:10px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>en voz alta — hecho para practicar, no para coleccionar rachas</footer>
+</div>
+
+<script>
+/* ============================= DATA ============================= */
+/* Loaded at startup from GET /api/content (backed by content.json) — see loadContent(). */
+let VOCAB, LISTEN, SPEAK, GRAMMAR, IMPROV_TOPICS, STARTER_PHRASES;
+let VOCAB_EASY, LISTEN_EASY, SPEAK_EASY, GRAMMAR_EASY;
+
+async function loadContent(){
+  const res = await fetch('/api/content');
+  if(!res.ok) throw new Error('Content load failed: '+res.status);
+  const c = await res.json();
+  VOCAB = c.VOCAB; LISTEN = c.LISTEN; SPEAK = c.SPEAK; GRAMMAR = c.GRAMMAR;
+  IMPROV_TOPICS = c.IMPROV_TOPICS; STARTER_PHRASES = c.STARTER_PHRASES;
+  VOCAB_EASY = c.VOCAB_EASY; LISTEN_EASY = c.LISTEN_EASY; SPEAK_EASY = c.SPEAK_EASY; GRAMMAR_EASY = c.GRAMMAR_EASY;
+}
+
+/* ============================= STATE ============================= */
+let progress = {
+  srs: {},            // id -> {box, due, seen, correct}
+  sessions: 0,
+  lastSessionDate: null,
+  streakDays: 0,
+  recognition: {correct:0, total:0},
+  production: {correct:0, total:0},
+  difficulty: 'easy',
+};
+
+const INTERVALS = [0, 1, 3, 7, 14, 30, 60]; // days, indexed by box
+
+function slugify(s){
+  return s.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z0-9]+/g,'-')
+    .replace(/(^-|-$)/g,'');
+}
+
+/* ---------- SYNC (real backend: /api/progress, guarded by a passcode) ---------- */
+let syncConfig = { passcode: '' };
+function loadSyncConfig(){
+  try{
+    const raw = localStorage.getItem('evoa-passcode');
+    if(raw) syncConfig.passcode = raw;
+  }catch(e){ /* localStorage unavailable in this context */ }
+}
+function saveSyncConfig(){
+  try{ localStorage.setItem('evoa-passcode', syncConfig.passcode); }
+  catch(e){ /* can't persist settings here — user will need to re-enter each session */ }
+}
+function syncReady(){ return !!syncConfig.passcode; }
+
+async function apiGet(){
+  const res = await fetch('/api/progress', {
+    headers: { 'X-Passcode': syncConfig.passcode }
+  });
+  if(!res.ok) throw new Error('Sync read failed: '+res.status);
+  return res.json();
+}
+async function apiSet(obj){
+  const res = await fetch('/api/progress', {
+    method: 'POST',
+    headers: { 'X-Passcode': syncConfig.passcode, 'Content-Type': 'application/json' },
+    body: JSON.stringify(obj)
+  });
+  if(!res.ok) throw new Error('Sync write failed: '+res.status);
+}
+
+async function loadProgress(){
+  loadSyncConfig();
+  const syncDot = document.getElementById('syncDot');
+  const syncText = document.getElementById('syncText');
+
+  if(syncReady()){
+    try{
+      const remote = await apiGet();
+      if(remote && typeof remote === 'object'){ progress = Object.assign(progress, remote); }
+      syncDot.classList.remove('off');
+      syncText.textContent = "Sync connected — same progress on every device where you've entered this passcode.";
+    }catch(e){
+      syncDot.classList.add('off');
+      syncText.textContent = "Sync configured but couldn't connect right now (offline, or wrong passcode). Check Settings.";
+    }
+  } else {
+    syncDot.classList.add('off');
+    syncText.textContent = "No sync configured — progress will only stay on this device this session. Open Settings to connect.";
+  }
+
+  VOCAB.forEach((v,i)=>{
+    const key = slugify(v.es);
+    if(progress.srs[key]) return;
+    if(progress.srs[i] && !progress.srs[i]._migrated){ progress.srs[key] = progress.srs[i]; } // migrate legacy index-keyed data once
+    if(!progress.srs[key]) progress.srs[key] = {box:0, due:0, seen:0, correct:0};
+  });
+  if(!progress.srsEasy) progress.srsEasy = {};
+  VOCAB_EASY.forEach((v,i)=>{
+    const key = slugify(v.es);
+    if(progress.srsEasy[key]) return;
+    if(progress.srsEasy[i]){ progress.srsEasy[key] = progress.srsEasy[i]; }
+    if(!progress.srsEasy[key]) progress.srsEasy[key] = {box:0, due:0, seen:0, correct:0};
+  });
+  renderDashboard();
+}
+
+let saveTimer=null;
+let saveFailCount = 0;
+function saveProgress(){
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(async ()=>{
+    for(let attempt=0; attempt<3; attempt++){
+      try{
+        if(syncReady()){
+          await apiSet(progress);
+        } else {
+          throw new Error('no sync method configured');
+        }
+        saveFailCount = 0;
+        const warn = document.getElementById('saveWarn');
+        if(warn) warn.remove();
+        return;
+      }catch(e){
+        console.error("save attempt "+attempt+" failed", e);
+        if(attempt<2) await new Promise(r=>setTimeout(r, 400*(attempt+1)));
+      }
+    }
+    saveFailCount++;
+    const syncText = document.getElementById('syncText');
+    if(syncText && !document.getElementById('saveWarn')){
+      const warn = document.createElement('span');
+      warn.id = 'saveWarn';
+      warn.style.color = 'var(--err)';
+      warn.textContent = syncReady()
+        ? ' · sync save is failing — check your passcode in Settings, or your connection.'
+        : ' · auto-save is failing on this device — set up sync in Settings below.';
+      syncText.after(warn);
+    }
+  }, 300);
+}
+
+function todayNum(){ return Math.floor(Date.now()/86400000); }
+
+function bumpSession(){
+  const today = todayNum();
+  if(progress.lastSessionDate !== today){
+    progress.sessions += 1;
+    if(progress.lastSessionDate === today-1){ progress.streakDays += 1; }
+    else if(progress.lastSessionDate !== today){ progress.streakDays = 1; }
+    progress.lastSessionDate = today;
+    saveProgress();
+    renderDashboard();
+  }
+}
+
+function logRecognition(correct){ progress.recognition.total++; if(correct) progress.recognition.correct++; renderGap(); saveProgress(); }
+function logProduction(correct){ progress.production.total++; if(correct) progress.production.correct++; renderGap(); saveProgress(); }
+
+function renderGap(){
+  const rec = progress.recognition.total ? Math.round(100*progress.recognition.correct/progress.recognition.total) : null;
+  const prod = progress.production.total ? Math.round(100*progress.production.correct/progress.production.total) : null;
+  document.getElementById('recFill').style.width = (rec ?? 0)+"%";
+  document.getElementById('prodFill').style.width = (prod ?? 0)+"%";
+  document.getElementById('recPct').textContent = rec===null ? "—" : rec+"%";
+  document.getElementById('prodPct').textContent = prod===null ? "—" : prod+"%";
+  const note = document.getElementById('gapNote');
+  if(rec!==null && prod!==null){
+    const gap = rec - prod;
+    if(gap >= 15) note.textContent = `There's your gap: ${gap} points. That's normal after Duolingo-style training — keep hitting Habla and Escucha and it closes.`;
+    else if(gap <= -5) note.textContent = `Production is ahead of recognition right now — good sign, means you're not just memorizing shapes.`;
+    else note.textContent = `Gap is small (${Math.abs(gap)} pts). Recognition and production are tracking together — keep going.`;
+  }
+}
+
+function renderDashboard(){
+  document.getElementById('statSessions').textContent = progress.sessions;
+  document.getElementById('statStreak').textContent = progress.streakDays;
+  const srs = vocabSRS();
+  const mastered = Object.values(srs).filter(s=>s.box>=4).length;
+  document.getElementById('statMastered').textContent = mastered;
+  const due = dueVocabIds().length;
+  document.getElementById('statDue').textContent = due;
+  const dueBadge = document.getElementById('dueVocab');
+  if(due>0){ dueBadge.textContent = due; dueBadge.classList.remove('hidden'); }
+  else dueBadge.classList.add('hidden');
+  renderGap();
+  renderOverall(mastered);
+  renderTimeline(mastered);
+}
+
+const PHASES = [
+  {name:"Cimientos", when:"Sessions 1–6", desc:"Rebuild recall on the core vocab set and present-tense conjugation. Expect this to feel slower than Duolingo — that's retrieval effort working."},
+  {name:"Producción", when:"Sessions 7–14", desc:"Listening and speaking rounds carry more weight. Past/future tenses enter the grammar rotation."},
+  {name:"Fluidez", when:"Sessions 15–22", desc:"Improvisa becomes your main station — free-talk on everyday topics using only what you already know. No outside material required, just consistency."},
+  {name:"Mantenimiento", when:"Sessions 23+", desc:"Spaced repetition keeps old material from decaying while Improvisa rounds keep pushing your active range. Real conversation with another person, whenever you can get it, is still the fastest way past this point — but it's not required to keep improving here."}
+];
+
+function renderOverall(mastered){
+  const bank = vocabBank();
+  const wordsPct = mastered / bank.length;
+  const sessionsPct = Math.min(1, progress.sessions / 20);
+  const prodPct = progress.production.total ? progress.production.correct/progress.production.total : 0;
+  const overall = Math.round(100 * ((wordsPct*0.4) + (sessionsPct*0.35) + (prodPct*0.25)));
+  document.getElementById('overallFill').style.width = overall + "%";
+  document.getElementById('overallPct').textContent = overall + "%";
+  const phaseIdx = Math.min(3, Math.floor(progress.sessions/7));
+  document.getElementById('overallCaption').textContent =
+    `${mastered}/${bank.length} words mastered (${progress.difficulty} mode) · ${progress.sessions} sessions logged · currently in "${PHASES[phaseIdx].name}"`;
+}
+
+function renderTimeline(mastered){
+  const phaseIdx = Math.min(3, Math.floor(progress.sessions/7));
+  const track = document.getElementById('tlTrack');
+  track.innerHTML = PHASES.map((p,i)=>{
+    const cls = i<phaseIdx ? 'done' : (i===phaseIdx ? 'current' : '');
+    const dotContent = i<phaseIdx ? '✓' : (i+1);
+    return `<div class="tl-phase ${cls}">
+      <div class="tl-dot">${dotContent}</div>
+      <span class="tl-when">${p.when}</span>
+      <div class="tl-name">${p.name}</div>
+      <div class="tl-desc">${p.desc}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ============================= NAV ============================= */
+const panel = document.getElementById('panel');
+let currentMod = 'vocab';
+document.querySelectorAll('.station').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.station').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    currentMod = btn.dataset.mod;
+    renderModule(currentMod);
+  });
+});
+
+document.querySelectorAll('.diff-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    progress.difficulty = btn.dataset.diff;
+    saveProgress();
+    updateDiffToggleUI();
+    renderModule(currentMod);
+  });
+});
+
+function updateDiffToggleUI(){
+  document.querySelectorAll('.diff-btn').forEach(b=>{
+    b.classList.toggle('active', b.dataset.diff === progress.difficulty);
+  });
+}
+
+function renderModule(mod){
+  if(mod==='vocab') renderVocab();
+  else if(mod==='listen') renderListen();
+  else if(mod==='speak') renderSpeak();
+  else if(mod==='grammar') renderGrammar();
+  else if(mod==='improv') renderImprov();
+}
+
+/* ============================= VOCAB (SRS) ============================= */
+let vocabQueue = [];
+let vocabIdx = 0;
+
+function vocabBank(){ return progress.difficulty === 'easy' ? VOCAB_EASY : VOCAB; }
+function vocabSRS(){ return progress.difficulty === 'easy' ? progress.srsEasy : progress.srs; }
+function vocabKey(bank, i){ return slugify(bank[i].es); }
+
+function dueVocabIds(){
+  const bank = vocabBank(), srs = vocabSRS(), t = todayNum();
+  return bank.map((_,i)=>i).filter(i => srs[vocabKey(bank,i)] && srs[vocabKey(bank,i)].due <= t);
+}
+
+function buildVocabQueue(){
+  const bank = vocabBank(), srs = vocabSRS();
+  let ids = dueVocabIds();
+  if(ids.length===0){
+    ids = bank.map((_,i)=>i).sort((a,b)=> srs[vocabKey(bank,a)].box - srs[vocabKey(bank,b)].box).slice(0,10);
+  }
+  ids.sort(()=>Math.random()-0.5);
+  vocabQueue = ids;
+  vocabIdx = 0;
+}
+
+function renderVocab(){
+  buildVocabQueue();
+  drawVocabCard();
+}
+
+function drawVocabCard(){
+  if(vocabIdx >= vocabQueue.length){
+    panel.innerHTML = `
+      <div class="panel-head"><h3 class="panel-title">Vocabulario</h3><span class="panel-progress">round complete</span></div>
+      <div class="card-stage">
+        <p class="prompt-sub">Nice work — that's a full round.</p>
+        <div class="btn-row"><button class="btn primary" id="vAgain">Practice another round</button></div>
+      </div>`;
+    document.getElementById('vAgain').onclick = renderVocab;
+    bumpSession();
+    return;
+  }
+  if(progress.difficulty === 'easy') drawVocabCardEasy();
+  else drawVocabCardHard();
+}
+
+function drawVocabCardHard(){
+  const idx = vocabQueue[vocabIdx];
+  const item = VOCAB[idx];
+  const key = vocabKey(VOCAB, idx);
+  panel.innerHTML = `
+    <div class="panel-head">
+      <h3 class="panel-title">Vocabulario <span style="color:var(--text-faint);font-size:14px;">· Difícil</span></h3>
+      <span class="panel-progress">${vocabIdx+1} / ${vocabQueue.length} · caja ${progress.srs[key].box}</span>
+    </div>
+    <div class="card-stage">
+      <p class="prompt-sub">What does this mean? Say the translation in your head before flipping.</p>
+      <div class="prompt-word">${item.es}</div>
+      <div class="btn-row"><button class="btn" id="flipBtn">Show answer</button></div>
+      <div class="answer-flip hidden" id="answerBox">
+        <div style="font-size:20px;font-weight:600;color:var(--gold);">${item.en}</div>
+        <div class="prompt-example">${item.ex}<br><span style="color:var(--text-faint);">${item.exen}</span></div>
+        <a class="verify-link" href="https://www.spanishdict.com/translate/${encodeURIComponent(item.es)}" target="_blank" rel="noopener">↗ verify on SpanishDict</a>
+      </div>
+      <div class="rate-row hidden" id="rateRow">
+        <button class="rate-btn again" data-r="0">Again</button>
+        <button class="rate-btn hard" data-r="1">Hard</button>
+        <button class="rate-btn good" data-r="2">Good</button>
+        <button class="rate-btn easy" data-r="3">Easy</button>
+      </div>
+    </div>`;
+  document.getElementById('flipBtn').onclick = ()=>{
+    document.getElementById('answerBox').classList.remove('hidden');
+    document.getElementById('rateRow').classList.remove('hidden');
+    document.getElementById('flipBtn').classList.add('hidden');
+  };
+  document.querySelectorAll('.rate-btn').forEach(b=>{
+    b.onclick = ()=>{
+      const r = parseInt(b.dataset.r);
+      applySRS(progress.srs, key, r);
+      vocabIdx++;
+      drawVocabCard();
+      renderDashboard();
+    };
+  });
+}
+
+function drawVocabCardEasy(){
+  const idx = vocabQueue[vocabIdx];
+  const item = VOCAB_EASY[idx];
+  const key = vocabKey(VOCAB_EASY, idx);
+  const opts = [...item.opts].sort(()=>Math.random()-0.5);
+  panel.innerHTML = `
+    <div class="panel-head">
+      <h3 class="panel-title">Vocabulario <span style="color:var(--text-faint);font-size:14px;">· Fácil</span></h3>
+      <span class="panel-progress">${vocabIdx+1} / ${vocabQueue.length} · caja ${progress.srsEasy[key].box}</span>
+    </div>
+    <div class="card-stage">
+      <p class="prompt-sub">What does this word mean? Pick one.</p>
+      <div class="prompt-word">${item.es}</div>
+      <div class="btn-row" id="easyOpts">
+        ${opts.map(o=>`<button class="btn" style="min-width:140px;" data-opt="${o}">${o}</button>`).join('')}
+      </div>
+      <div id="easyFeedback"></div>
+    </div>`;
+  document.querySelectorAll('#easyOpts .btn').forEach(b=>{
+    b.onclick = ()=>{
+      document.querySelectorAll('#easyOpts .btn').forEach(x=>x.disabled=true);
+      const correct = b.dataset.opt === item.en;
+      applySRS(progress.srsEasy, key, correct ? 2 : 0);
+      b.style.borderColor = correct ? 'var(--teal)' : 'var(--err)';
+      b.style.color = correct ? 'var(--teal)' : 'var(--err)';
+      if(!correct){
+        document.querySelectorAll('#easyOpts .btn').forEach(x=>{
+          if(x.dataset.opt===item.en){ x.style.borderColor='var(--teal)'; x.style.color='var(--teal)'; }
+        });
+      }
+      const fb = document.getElementById('easyFeedback');
+      fb.innerHTML = `<div class="feedback ${correct?'correct':'wrong'}">${correct? '✓ Correcto.' : 'Correct answer: '+item.en}</div>
+        <a class="verify-link" href="https://www.spanishdict.com/translate/${encodeURIComponent(item.es)}" target="_blank" rel="noopener">↗ verify on SpanishDict</a>`;
+      const nextBtn = document.createElement('button');
+      nextBtn.className='btn primary'; nextBtn.textContent='Next →'; nextBtn.style.marginTop='16px'; nextBtn.style.display='block';
+      nextBtn.onclick = ()=>{ vocabIdx++; drawVocabCard(); renderDashboard(); };
+      fb.appendChild(nextBtn);
+      renderDashboard();
+    };
+  });
+}
+
+function applySRS(srsObj, key, rating){
+  const s = srsObj[key];
+  s.seen++;
+  const correct = rating >= 2;
+  logProduction(correct);
+  if(rating===0){ s.box = 0; }
+  else if(rating===1){ s.box = Math.max(0, s.box-1); s.correct++; }
+  else if(rating===2){ s.box = Math.min(6, s.box+1); s.correct++; }
+  else { s.box = Math.min(6, s.box+2); s.correct++; }
+  s.due = todayNum() + INTERVALS[s.box];
+  saveProgress();
+}
+
+/* ============================= LISTEN ============================= */
+let listenQueue = [];
+let listenIdx = 0;
+
+function renderListen(){
+  const bank = progress.difficulty === 'easy' ? LISTEN_EASY : LISTEN;
+  listenQueue = bank.map((_,i)=>i).sort(()=>Math.random()-0.5).slice(0, progress.difficulty==='easy' ? 6 : 8);
+  listenIdx = 0;
+  drawListenCard();
+}
+
+function speakText(text){
+  if(!('speechSynthesis' in window)){ return false; }
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'es-ES';
+  u.rate = 0.92;
+  const voices = window.speechSynthesis.getVoices();
+  const esVoice = voices.find(v=>v.lang && v.lang.startsWith('es'));
+  if(esVoice) u.voice = esVoice;
+  window.speechSynthesis.speak(u);
+  return true;
+}
+
+function normalize(s){
+  return s.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'') // strip accents for lenient compare
+    .replace(/[¿?¡!.,]/g,'')
+    .trim().replace(/\s+/g,' ');
+}
+
+function drawListenCard(){
+  const bank = progress.difficulty === 'easy' ? LISTEN_EASY : LISTEN;
+  if(listenIdx >= listenQueue.length){
+    panel.innerHTML = `
+      <div class="panel-head"><h3 class="panel-title">Escucha</h3><span class="panel-progress">round complete</span></div>
+      <div class="card-stage">
+        <p class="prompt-sub">Round done. Real conversation is faster than any of these — that's the point of drilling it slow first.</p>
+        <div class="btn-row"><button class="btn primary" id="lAgain">Another round</button></div>
+      </div>`;
+    document.getElementById('lAgain').onclick = renderListen;
+    bumpSession();
+    return;
+  }
+  if(progress.difficulty === 'easy') drawListenCardEasy(bank);
+  else drawListenCardHard(bank);
+}
+
+function drawListenCardEasy(bank){
+  const item = bank[listenQueue[listenIdx]];
+  const opts = [item.es, ...item.wrong].sort(()=>Math.random()-0.5);
+  panel.innerHTML = `
+    <div class="panel-head">
+      <h3 class="panel-title">Escucha <span style="color:var(--text-faint);font-size:14px;">· Fácil</span></h3>
+      <span class="panel-progress">${listenIdx+1} / ${listenQueue.length}</span>
+    </div>
+    <div class="card-stage">
+      <p class="prompt-sub">Listen, then pick the sentence you heard. Play it as many times as you want.</p>
+      <div class="btn-row"><button class="btn primary" id="playBtn">▶ Play sentence</button><button class="btn ghost" id="slowBtn">Play slower</button></div>
+      <div id="unsupportedNote"></div>
+      <div class="btn-row" id="lOpts" style="flex-direction:column;align-items:stretch;max-width:460px;margin:26px auto 0;">
+        ${opts.map(o=>`<button class="btn" data-opt="${o}" style="text-align:left;">${o}</button>`).join('')}
+      </div>
+      <div id="listenFeedback"></div>
+    </div>`;
+  if(!('speechSynthesis' in window)){
+    document.getElementById('unsupportedNote').innerHTML = `<div class="unsupported">Speech synthesis isn't available in this browser. Try Chrome or Edge for audio playback.</div>`;
+  }
+  document.getElementById('playBtn').onclick = ()=> speakText(item.es);
+  document.getElementById('slowBtn').onclick = ()=>{
+    if(!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(item.es);
+    u.lang='es-ES'; u.rate=0.6;
+    window.speechSynthesis.speak(u);
+  };
+  document.querySelectorAll('#lOpts .btn').forEach(b=>{
+    b.onclick = ()=>{
+      document.querySelectorAll('#lOpts .btn').forEach(x=>x.disabled=true);
+      const correct = b.dataset.opt === item.es;
+      logRecognition(correct);
+      b.style.borderColor = correct ? 'var(--teal)' : 'var(--err)';
+      b.style.color = correct ? 'var(--teal)' : 'var(--err)';
+      if(!correct){
+        document.querySelectorAll('#lOpts .btn').forEach(x=>{
+          if(x.dataset.opt===item.es){ x.style.borderColor='var(--teal)'; x.style.color='var(--teal)'; }
+        });
+      }
+      const fb = document.getElementById('listenFeedback');
+      fb.innerHTML = `<div class="feedback ${correct?'correct':'wrong'}">${correct? '✓ Correcto.' : 'The correct sentence was highlighted above.'}</div><div class="prompt-example">${item.en}</div>`;
+      const nextBtn = document.createElement('button');
+      nextBtn.className = 'btn primary'; nextBtn.textContent = 'Next →'; nextBtn.style.marginTop='14px';
+      nextBtn.onclick = ()=>{ listenIdx++; drawListenCard(); renderDashboard(); };
+      fb.appendChild(nextBtn);
+    };
+  });
+  speakText(item.es);
+}
+
+function drawListenCardHard(bank){
+  const item = bank[listenQueue[listenIdx]];
+  panel.innerHTML = `
+    <div class="panel-head">
+      <h3 class="panel-title">Escucha <span style="color:var(--text-faint);font-size:14px;">· Difícil</span></h3>
+      <span class="panel-progress">${listenIdx+1} / ${listenQueue.length}</span>
+    </div>
+    <div class="card-stage">
+      <p class="prompt-sub">Listen, then type exactly what you hear (accents optional).</p>
+      <div class="btn-row"><button class="btn primary" id="playBtn">▶ Play sentence</button><button class="btn ghost" id="slowBtn">Play slower</button></div>
+      <div id="unsupportedNote"></div>
+      <input type="text" id="listenInput" placeholder="Escribe lo que escuchas..." autocomplete="off">
+      <div class="btn-row"><button class="btn primary" id="checkBtn">Check</button></div>
+      <div id="listenFeedback"></div>
+    </div>`;
+  const playBtn = document.getElementById('playBtn');
+  const slowBtn = document.getElementById('slowBtn');
+  const ok = speakText.length>=0 && 'speechSynthesis' in window;
+  if(!ok){
+    document.getElementById('unsupportedNote').innerHTML = `<div class="unsupported">Speech synthesis isn't available in this browser. Try Chrome or Edge for audio playback.</div>`;
+  }
+  playBtn.onclick = ()=> speakText(item.es);
+  slowBtn.onclick = ()=>{
+    if(!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(item.es);
+    u.lang='es-ES'; u.rate=0.62;
+    window.speechSynthesis.speak(u);
+  };
+  document.getElementById('checkBtn').onclick = ()=>{
+    const val = document.getElementById('listenInput').value;
+    const correct = normalize(val) === normalize(item.es);
+    logRecognition(correct); // listening-to-text = still a recognition/decoding skill
+    const fb = document.getElementById('listenFeedback');
+    if(correct){
+      fb.innerHTML = `<div class="feedback correct">✓ Exact match.</div>`;
+    } else {
+      fb.innerHTML = `<div class="feedback wrong">Not quite. The sentence was:</div>
+        <div class="diff-line">${item.es}</div>
+        <div class="prompt-example">${item.en}</div>`;
+    }
+    document.getElementById('checkBtn').disabled = true;
+    const nextBtn = document.createElement('button');
+    nextBtn.className = 'btn primary'; nextBtn.textContent = 'Next →';
+    nextBtn.style.marginTop = '14px';
+    nextBtn.onclick = ()=>{ listenIdx++; drawListenCard(); renderDashboard(); };
+    fb.appendChild(nextBtn);
+  };
+  document.getElementById('listenInput').addEventListener('keydown', e=>{
+    if(e.key==='Enter') document.getElementById('checkBtn').click();
+  });
+  speakText(item.es);
+}
+
+/* ============================= SPEAK ============================= */
+let speakQueue = [];
+let speakIdx = 0;
+let recognizer = null;
+
+function getRecognizer(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR) return null;
+  const r = new SR();
+  r.lang = 'es-ES';
+  r.interimResults = false;
+  r.maxAlternatives = 1;
+  return r;
+}
+
+function renderSpeak(){
+  const bank = progress.difficulty === 'easy' ? SPEAK_EASY : SPEAK;
+  speakQueue = bank.map((_,i)=>i).sort(()=>Math.random()-0.5).slice(0,6);
+  speakIdx = 0;
+  drawSpeakCard();
+}
+
+function diffWords(target, heard){
+  const t = normalize(target).split(' ');
+  const h = normalize(heard).split(' ');
+  const hSet = [...h];
+  return t.map(w=>{
+    const idx = hSet.indexOf(w);
+    if(idx>=0){ hSet.splice(idx,1); return {w, ok:true}; }
+    return {w, ok:false};
+  });
+}
+
+function drawSpeakCard(){
+  const bank = progress.difficulty === 'easy' ? SPEAK_EASY : SPEAK;
+  const easy = progress.difficulty === 'easy';
+  if(speakIdx >= speakQueue.length){
+    panel.innerHTML = `
+      <div class="panel-head"><h3 class="panel-title">Habla</h3><span class="panel-progress">round complete</span></div>
+      <div class="card-stage">
+        <p class="prompt-sub">That's the round. This is the drill Duolingo skips almost entirely — keep it in rotation.</p>
+        <div class="btn-row"><button class="btn primary" id="sAgain">Another round</button></div>
+      </div>`;
+    document.getElementById('sAgain').onclick = renderSpeak;
+    bumpSession();
+    return;
+  }
+  const text = bank[speakQueue[speakIdx]];
+  const supported = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+  panel.innerHTML = `
+    <div class="panel-head">
+      <h3 class="panel-title">Habla <span style="color:var(--text-faint);font-size:14px;">· ${easy?'Fácil':'Difícil'}</span></h3>
+      <span class="panel-progress">${speakIdx+1} / ${speakQueue.length}</span>
+    </div>
+    <div class="card-stage">
+      <p class="prompt-sub">${easy ? 'Listen first, then repeat it back — same words, your voice.' : 'Say this sentence out loud.'}</p>
+      <div class="g-sentence" style="font-size:24px;">${text}</div>
+      <div class="btn-row"><button class="btn ghost" id="hearBtn">🔊 ${easy? 'Hear it (repeat this)' : 'Hear it first'}</button></div>
+      ${supported ? `<div class="btn-row"><button class="btn mic" id="micBtn">● Tap to speak</button></div>`
+                  : `<div class="unsupported" style="margin-top:16px;">Speech recognition isn't supported in this browser (Chrome/Edge on desktop or Android work best). You can still read the sentence aloud and self-check against the audio.</div>`}
+      <div id="speakFeedback"></div>
+    </div>`;
+  document.getElementById('hearBtn').onclick = ()=> speakText(text);
+  if(easy) speakText(text);
+  if(supported){
+    const micBtn = document.getElementById('micBtn');
+    micBtn.onclick = ()=>{
+      if(recognizer){ try{ recognizer.stop(); }catch(e){} }
+      recognizer = getRecognizer();
+      if(!recognizer) return;
+      micBtn.classList.add('recording'); micBtn.textContent = '● Listening…';
+      recognizer.onresult = (ev)=>{
+        const heard = ev.results[0][0].transcript;
+        showSpeakResult(text, heard, easy ? 0.55 : 0.8);
+      };
+      recognizer.onerror = ()=>{
+        micBtn.classList.remove('recording'); micBtn.textContent = '● Tap to speak';
+        document.getElementById('speakFeedback').innerHTML = `<div class="feedback wrong">Didn't catch that — check mic permissions and try again.</div>`;
+      };
+      recognizer.onend = ()=>{ micBtn.classList.remove('recording'); micBtn.textContent = '● Tap to speak'; };
+      recognizer.start();
+    };
+  }
+}
+
+function showSpeakResult(target, heard, threshold){
+  const diff = diffWords(target, heard);
+  const okCount = diff.filter(d=>d.ok).length;
+  const score = diff.length ? okCount/diff.length : 0;
+  const correct = score >= (threshold ?? 0.8);
+  logProduction(correct);
+  const html = diff.map(d=>`<span class="diff-word ${d.ok?'ok':'missing'}">${d.w}</span>`).join(' ');
+  const fb = document.getElementById('speakFeedback');
+  fb.innerHTML = `
+    <div class="prompt-sub" style="margin-top:16px;">You said:</div>
+    <div class="diff-line" style="font-style:italic;">"${heard}"</div>
+    <div class="prompt-sub" style="margin-top:10px;">Matched against target:</div>
+    <div class="diff-line">${html}</div>
+    <div class="feedback ${correct?'correct':'wrong'}">${Math.round(score*100)}% word match ${correct? '— solid.' : '— close, try once more or move on.'}</div>
+  `;
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'btn primary'; nextBtn.textContent = 'Next →';
+  nextBtn.style.marginTop = '14px';
+  nextBtn.onclick = ()=>{ speakIdx++; drawSpeakCard(); renderDashboard(); };
+  fb.appendChild(nextBtn);
+}
+
+/* ============================= GRAMMAR ============================= */
+let gramQueue = [];
+let gramIdx = 0;
+
+function renderGrammar(){
+  const bank = progress.difficulty === 'easy' ? GRAMMAR_EASY : GRAMMAR;
+  gramQueue = bank.map((_,i)=>i).sort(()=>Math.random()-0.5);
+  gramIdx = 0;
+  drawGramCard();
+}
+
+function drawGramCard(){
+  const easy = progress.difficulty === 'easy';
+  const bank = easy ? GRAMMAR_EASY : GRAMMAR;
+  if(gramIdx >= gramQueue.length){
+    panel.innerHTML = `
+      <div class="panel-head"><h3 class="panel-title">Gramática</h3><span class="panel-progress">round complete</span></div>
+      <div class="card-stage">
+        <p class="prompt-sub">Full pass through the conjugation set done.</p>
+        <div class="btn-row"><button class="btn primary" id="gAgain">Another round</button></div>
+      </div>`;
+    document.getElementById('gAgain').onclick = renderGrammar;
+    bumpSession();
+    return;
+  }
+  const item = bank[gramQueue[gramIdx]];
+  const displaySentence = item.sentence.replace('___', '<span class="g-blank">&nbsp;</span>');
+  const verifyLink = `<a class="verify-link" href="https://www.spanishdict.com/conjugate/${encodeURIComponent(item.verb)}" target="_blank" rel="noopener">↗ verify conjugation on SpanishDict</a>`;
+  if(easy){
+    const opts = [...item.opts].sort(()=>Math.random()-0.5);
+    panel.innerHTML = `
+      <div class="panel-head">
+        <h3 class="panel-title">Gramática <span style="color:var(--text-faint);font-size:14px;">· Fácil</span></h3>
+        <span class="panel-progress">${gramIdx+1} / ${gramQueue.length}</span>
+      </div>
+      <div class="card-stage">
+        <p class="prompt-sub">Which form of <strong style="color:var(--text);">${item.verb}</strong> fits, for <strong style="color:var(--text);">${item.pronoun}</strong>?</p>
+        <div class="g-sentence">${displaySentence}</div>
+        <div class="btn-row" id="gOpts">
+          ${opts.map(o=>`<button class="btn" data-opt="${o}" style="min-width:110px;">${o}</button>`).join('')}
+        </div>
+        <div id="gramFeedback"></div>
+      </div>`;
+    document.querySelectorAll('#gOpts .btn').forEach(b=>{
+      b.onclick = ()=>{
+        document.querySelectorAll('#gOpts .btn').forEach(x=>x.disabled=true);
+        const correct = b.dataset.opt === item.answer;
+        logProduction(correct);
+        b.style.borderColor = correct ? 'var(--teal)' : 'var(--err)';
+        b.style.color = correct ? 'var(--teal)' : 'var(--err)';
+        if(!correct){
+          document.querySelectorAll('#gOpts .btn').forEach(x=>{
+            if(x.dataset.opt===item.answer){ x.style.borderColor='var(--teal)'; x.style.color='var(--teal)'; }
+          });
+        }
+        const full = item.sentence.replace('___', item.answer);
+        const fb = document.getElementById('gramFeedback');
+        fb.innerHTML = `<div class="feedback ${correct?'correct':'wrong'}">${correct?'✓ Correcto':'Correct form: '+item.answer} — ${full}</div>${verifyLink}`;
+        const nextBtn = document.createElement('button');
+        nextBtn.className = 'btn primary'; nextBtn.textContent = 'Next →'; nextBtn.style.marginTop='16px'; nextBtn.style.display='block';
+        nextBtn.onclick = ()=>{ gramIdx++; drawGramCard(); renderDashboard(); };
+        fb.appendChild(nextBtn);
+      };
+    });
+    return;
+  }
+  panel.innerHTML = `
+    <div class="panel-head">
+      <h3 class="panel-title">Gramática <span style="color:var(--text-faint);font-size:14px;">· Difícil</span></h3>
+      <span class="panel-progress">${gramIdx+1} / ${gramQueue.length}</span>
+    </div>
+    <div class="card-stage">
+      <p class="prompt-sub">Conjugate <strong style="color:var(--text);">${item.verb}</strong> for <strong style="color:var(--text);">${item.pronoun}</strong> (${item.tense})</p>
+      <div class="g-sentence">${displaySentence}</div>
+      <input type="text" id="gramInput" placeholder="Escribe la forma correcta..." style="max-width:280px;margin:0 auto;display:block;" autocomplete="off">
+      <div class="btn-row"><button class="btn primary" id="gramCheck">Check</button></div>
+      <div id="gramFeedback"></div>
+    </div>`;
+  document.getElementById('gramCheck').onclick = ()=>{
+    const val = document.getElementById('gramInput').value;
+    const correct = normalize(val) === normalize(item.answer);
+    logProduction(correct);
+    const fb = document.getElementById('gramFeedback');
+    const full = item.sentence.replace('___', item.answer);
+    if(correct){
+      fb.innerHTML = `<div class="feedback correct">✓ Correcto — ${full}</div>${verifyLink}`;
+    } else {
+      fb.innerHTML = `<div class="feedback wrong">Not quite. Correct form: <strong>${item.answer}</strong></div><div class="prompt-example">${full}</div>${verifyLink}`;
+    }
+    document.getElementById('gramCheck').disabled = true;
+    const nextBtn = document.createElement('button');
+    nextBtn.className = 'btn primary'; nextBtn.textContent = 'Next →';
+    nextBtn.style.marginTop = '14px';
+    nextBtn.onclick = ()=>{ gramIdx++; drawGramCard(); renderDashboard(); };
+    fb.appendChild(nextBtn);
+  };
+  document.getElementById('gramInput').addEventListener('keydown', e=>{
+    if(e.key==='Enter') document.getElementById('gramCheck').click();
+  });
+}
+
+/* ============================= IMPROV (free talk, no outside material) ============================= */
+let improvState = {
+  listening: false,
+  recognizer: null,
+  seconds: 0,
+  timerHandle: null,
+  transcript: "",
+  topic: null,
+};
+
+function renderImprov(){
+  improvState.topic = IMPROV_TOPICS[Math.floor(Math.random()*IMPROV_TOPICS.length)];
+  improvState.seconds = 0;
+  improvState.transcript = "";
+  drawImprovCard();
+}
+
+function fmtTime(s){
+  const m = Math.floor(s/60), sec = s%60;
+  return String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');
+}
+
+function drawImprovCard(){
+  const t = improvState.topic;
+  const easy = progress.difficulty === 'easy';
+  const supported = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+  const target = easy ? 20 : 45;
+  panel.innerHTML = `
+    <div class="panel-head">
+      <h3 class="panel-title">Improvisa <span style="color:var(--text-faint);font-size:14px;">· ${easy?'Fácil':'Difícil'}</span></h3>
+      <span class="panel-progress">sin guion — habla con lo que ya sabes</span>
+    </div>
+    <div class="card-stage">
+      <p class="prompt-sub">Talk about this for at least ${target} seconds. No script, no correct answer — the goal is not stopping.</p>
+      <div class="prompt-word" style="font-size:26px;">${t.topic}</div>
+      <ul class="improv-prompts">${t.prompts.map(p=>`<li>${p}</li>`).join('')}</ul>
+      ${easy ? `<p class="prompt-sub" style="margin-top:16px;">Stuck? Start with any of these:</p>
+        <div class="improv-stats">${STARTER_PHRASES.map(s=>`<span class="stat-chip">${s}</span>`).join('')}</div>` : ''}
+      <div class="improv-timer" id="improvTimer">00:00</div>
+      ${supported ? `<div class="btn-row"><button class="btn mic" id="improvMic">● Empezar a hablar</button><button class="btn ghost hidden" id="improvStop">■ Terminar</button></div>`
+                  : `<div class="unsupported">Speech recognition isn't supported in this browser. You can still talk out loud using the topic and prompts above — just self-time it; the transcript feature needs Chrome or Edge.</div>`}
+      <div class="transcript-box hidden" id="improvTranscript"></div>
+      <div id="improvResults"></div>
+    </div>`;
+  document.getElementById('improvMic') && (document.getElementById('improvMic').onclick = startImprov);
+  document.getElementById('improvStop') && (document.getElementById('improvStop').onclick = stopImprov);
+}
+
+function startImprov(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR) return;
+  improvState.recognizer = new SR();
+  improvState.recognizer.lang = 'es-ES';
+  improvState.recognizer.continuous = true;
+  improvState.recognizer.interimResults = true;
+  improvState.listening = true;
+  improvState.transcript = "";
+  document.getElementById('improvMic').classList.add('hidden');
+  document.getElementById('improvStop').classList.remove('hidden');
+  document.getElementById('improvTranscript').classList.remove('hidden');
+  document.getElementById('improvTranscript').textContent = "Escuchando…";
+
+  improvState.recognizer.onresult = (ev)=>{
+    let finalText = "";
+    let interim = "";
+    for(let i=0;i<ev.results.length;i++){
+      if(ev.results[i].isFinal) finalText += ev.results[i][0].transcript + " ";
+      else interim += ev.results[i][0].transcript;
+    }
+    improvState.transcript = finalText.trim();
+    document.getElementById('improvTranscript').textContent = (finalText + interim).trim() || "…";
+  };
+  improvState.recognizer.onend = ()=>{
+    if(improvState.listening){
+      try{ improvState.recognizer.start(); }catch(e){} // auto-restart on silence timeout
+    }
+  };
+  improvState.recognizer.onerror = (e)=>{
+    if(e.error === 'not-allowed'){ stopImprov(); document.getElementById('improvResults').innerHTML = `<div class="feedback wrong">Mic permission denied — enable it to use this station.</div>`; }
+  };
+  improvState.recognizer.start();
+
+  improvState.timerHandle = setInterval(()=>{
+    improvState.seconds++;
+    document.getElementById('improvTimer').textContent = fmtTime(improvState.seconds);
+  }, 1000);
+}
+
+function stopImprov(){
+  improvState.listening = false;
+  clearInterval(improvState.timerHandle);
+  if(improvState.recognizer){ try{ improvState.recognizer.stop(); }catch(e){} }
+  const micBtn = document.getElementById('improvMic');
+  const stopBtn = document.getElementById('improvStop');
+  if(micBtn) micBtn.classList.add('hidden');
+  if(stopBtn) stopBtn.classList.add('hidden');
+  analyzeImprov();
+}
+
+function analyzeImprov(){
+  const words = improvState.transcript.trim().split(/\s+/).filter(Boolean);
+  const wordCount = words.length;
+  const mins = Math.max(improvState.seconds/60, 0.1);
+  const wpm = Math.round(wordCount / mins);
+  const norm = normalize(improvState.transcript);
+  const hits = VOCAB.filter(v=>{
+    const base = normalize(v.es.replace(/\(.*?\)/g,'').trim());
+    return base && norm.includes(base);
+  });
+  const results = document.getElementById('improvResults');
+  const chips = hits.length
+    ? hits.slice(0,10).map(h=>`<span class="stat-chip hit">✓ ${h.es}</span>`).join('')
+    : `<span class="stat-chip">no tracked-bank words detected — totally fine, means you reached beyond it</span>`;
+  results.innerHTML = `
+    <div class="improv-stats">
+      <span class="stat-chip">${wordCount} palabras</span>
+      <span class="stat-chip">${fmtTime(improvState.seconds)} hablando</span>
+      <span class="stat-chip">~${wpm} palabras/min</span>
+    </div>
+    <p class="prompt-sub" style="margin-top:16px;">Vocab-bank words you worked in:</p>
+    <div class="improv-stats">${chips}</div>
+    <p class="prompt-sub" style="margin-top:20px;">Honest self-rating — how did it feel to keep going?</p>
+    <div class="self-rate">
+      <button class="rate-btn again" data-r="0">Long pauses, stuck often</button>
+      <button class="rate-btn hard" data-r="1">Some pauses, pushed through</button>
+      <button class="rate-btn good" data-r="2">Mostly fluid</button>
+      <button class="rate-btn easy" data-r="3">Barely stopped</button>
+    </div>`;
+  document.querySelectorAll('.self-rate .rate-btn').forEach(b=>{
+    b.onclick = ()=>{
+      const r = parseInt(b.dataset.r);
+      logProduction(r>=2);
+      bumpSession();
+      const nextBtn = document.createElement('button');
+      nextBtn.className = 'btn primary'; nextBtn.textContent = 'Nuevo tema →';
+      nextBtn.style.marginTop = '16px'; nextBtn.style.display='block'; nextBtn.style.marginLeft='auto'; nextBtn.style.marginRight='auto';
+      nextBtn.onclick = renderImprov;
+      results.appendChild(nextBtn);
+      document.querySelectorAll('.self-rate .rate-btn').forEach(x=>x.disabled=true);
+      renderDashboard();
+    };
+  });
+}
+
+/* ============================= SYNC SETTINGS ============================= */
+document.getElementById('settingsToggle').addEventListener('click', ()=>{
+  document.getElementById('settingsPanel').classList.toggle('hidden');
+  document.getElementById('passcodeInput').value = syncConfig.passcode || '';
+});
+document.getElementById('saveSettingsBtn').addEventListener('click', async ()=>{
+  const passcode = document.getElementById('passcodeInput').value.trim();
+  const msg = document.getElementById('settingsMsg');
+  if(!passcode){ msg.innerHTML = `<div class="feedback wrong">Passcode is required.</div>`; return; }
+  syncConfig = { passcode };
+  msg.innerHTML = `<div class="prompt-sub">Connecting…</div>`;
+  try{
+    const remote = await apiGet();
+    if(remote && typeof remote === 'object' && Object.keys(remote).length){
+      progress = Object.assign(progress, remote);
+      msg.innerHTML = `<div class="feedback correct">✓ Connected — found existing progress on the server and loaded it.</div>`;
+    } else {
+      await apiSet(progress);
+      msg.innerHTML = `<div class="feedback correct">✓ Connected — server had no progress yet, saved your current progress there.</div>`;
+    }
+    saveSyncConfig();
+    updateDiffToggleUI();
+    renderDashboard();
+    const syncDot = document.getElementById('syncDot');
+    syncDot.classList.remove('off');
+    document.getElementById('syncText').textContent = "Sync connected — same progress on every device where you've entered this passcode.";
+  }catch(e){
+    msg.innerHTML = `<div class="feedback wrong">Couldn't connect — double check the passcode. (${e.message})</div>`;
+  }
+});
+document.getElementById('clearSettingsBtn').addEventListener('click', ()=>{
+  syncConfig = { passcode:'' };
+  saveSyncConfig();
+  document.getElementById('passcodeInput').value = '';
+  document.getElementById('settingsMsg').innerHTML = `<div class="prompt-sub">Disconnected. Progress will fall back to this device/session only.</div>`;
+});
+
+/* ============================= MANUAL BACKUP (export/import fallback) ============================= */
+document.getElementById('backupToggle').addEventListener('click', ()=>{
+  document.getElementById('backupPanel').classList.toggle('hidden');
+});
+document.getElementById('copyCodeBtn').addEventListener('click', ()=>{
+  const code = btoa(unescape(encodeURIComponent(JSON.stringify(progress))));
+  const out = document.getElementById('codeOut');
+  out.value = code;
+  out.select();
+  const msg = document.getElementById('backupMsg');
+  navigator.clipboard?.writeText(code).then(()=>{
+    msg.innerHTML = `<div class="feedback correct">✓ Copied. Paste it into this same box on your other device.</div>`;
+  }).catch(()=>{
+    msg.innerHTML = `<div class="feedback">Code generated above — select it manually and copy if the copy button didn't work.</div>`;
+  });
+});
+document.getElementById('loadCodeBtn').addEventListener('click', ()=>{
+  const raw = document.getElementById('codeIn').value.trim();
+  const msg = document.getElementById('backupMsg');
+  if(!raw){ msg.innerHTML = `<div class="feedback wrong">Paste a code first.</div>`; return; }
+  try{
+    const parsed = JSON.parse(decodeURIComponent(escape(atob(raw))));
+    progress = Object.assign(progress, parsed);
+    saveProgress();
+    updateDiffToggleUI();
+    renderDashboard();
+    msg.innerHTML = `<div class="feedback correct">✓ Progress loaded — ${progress.sessions} sessions, ${progress.streakDays}-day streak.</div>`;
+  }catch(e){
+    msg.innerHTML = `<div class="feedback wrong">That code didn't parse — make sure you copied the whole thing.</div>`;
+  }
+});
+
+/* ============================= INIT ============================= */
+if('speechSynthesis' in window){
+  window.speechSynthesis.onvoiceschanged = ()=>{};
+}
+loadContent()
+  .then(loadProgress)
+  .then(()=>{ updateDiffToggleUI(); renderModule(currentMod); })
+  .catch(e=>{
+    panel.innerHTML = `<div class="card-stage"><p class="feedback wrong">Couldn't load app content from the server. (${e.message}) Try reloading.</p></div>`;
+    console.error(e);
+  });
+</script>
+</body>
+</html>

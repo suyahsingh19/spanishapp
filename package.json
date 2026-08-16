@@ -1,0 +1,18 @@
+{
+  "name": "en-voz-alta",
+  "version": "1.0.0",
+  "private": true,
+  "description": "En Voz Alta — Spanish practice app with a small Node/Express + Postgres backend for cross-device progress sync.",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.4.1",
+    "pg": "^8.13.0"
+  }
+}

@@ -1,0 +1,906 @@
+{
+  "VOCAB": [
+    {
+      "es": "aunque",
+      "en": "although / even though",
+      "ex": "Aunque llueve, voy a salir.",
+      "exen": "Although it's raining, I'm going out."
+    },
+    {
+      "es": "sin embargo",
+      "en": "however / nevertheless",
+      "ex": "Estudié mucho; sin embargo, no aprobé.",
+      "exen": "I studied a lot; however, I didn't pass."
+    },
+    {
+      "es": "a pesar de",
+      "en": "despite / in spite of",
+      "ex": "A pesar del tráfico, llegamos a tiempo.",
+      "exen": "Despite the traffic, we arrived on time."
+    },
+    {
+      "es": "darse cuenta de",
+      "en": "to realize",
+      "ex": "Me di cuenta de que olvidé las llaves.",
+      "exen": "I realized I forgot my keys."
+    },
+    {
+      "es": "llevar (+ tiempo)",
+      "en": "to have been (doing something) for",
+      "ex": "Llevo tres años viviendo aquí.",
+      "exen": "I've been living here for three years."
+    },
+    {
+      "es": "soler",
+      "en": "to usually (do something)",
+      "ex": "Suelo desayunar a las siete.",
+      "exen": "I usually have breakfast at seven."
+    },
+    {
+      "es": "quedar en",
+      "en": "to agree to / arrange to",
+      "ex": "Quedamos en vernos el sábado.",
+      "exen": "We agreed to meet on Saturday."
+    },
+    {
+      "es": "echar de menos",
+      "en": "to miss (someone/something)",
+      "ex": "Echo de menos a mi familia.",
+      "exen": "I miss my family."
+    },
+    {
+      "es": "por si acaso",
+      "en": "just in case",
+      "ex": "Llevaré un paraguas por si acaso.",
+      "exen": "I'll bring an umbrella just in case."
+    },
+    {
+      "es": "de repente",
+      "en": "suddenly",
+      "ex": "De repente, empezó a llover.",
+      "exen": "Suddenly, it started raining."
+    },
+    {
+      "es": "al fin y al cabo",
+      "en": "after all / when it comes down to it",
+      "ex": "Al fin y al cabo, es tu decisión.",
+      "exen": "After all, it's your decision."
+    },
+    {
+      "es": "tener ganas de",
+      "en": "to feel like (doing something)",
+      "ex": "Tengo ganas de salir a caminar.",
+      "exen": "I feel like going for a walk."
+    },
+    {
+      "es": "cuanto antes",
+      "en": "as soon as possible",
+      "ex": "Necesito la respuesta cuanto antes.",
+      "exen": "I need the answer as soon as possible."
+    },
+    {
+      "es": "ponerse de acuerdo",
+      "en": "to reach an agreement",
+      "ex": "No logramos ponernos de acuerdo.",
+      "exen": "We couldn't reach an agreement."
+    },
+    {
+      "es": "hacer falta",
+      "en": "to be needed / necessary",
+      "ex": "Hace falta más tiempo para terminar.",
+      "exen": "More time is needed to finish."
+    },
+    {
+      "es": "tratar de",
+      "en": "to try to",
+      "ex": "Trato de hablar español todos los días.",
+      "exen": "I try to speak Spanish every day."
+    },
+    {
+      "es": "dejar de",
+      "en": "to stop (doing something)",
+      "ex": "Dejé de fumar hace un año.",
+      "exen": "I stopped smoking a year ago."
+    },
+    {
+      "es": "resulta que",
+      "en": "it turns out that",
+      "ex": "Resulta que ya lo sabían.",
+      "exen": "It turns out they already knew."
+    },
+    {
+      "es": "a lo mejor",
+      "en": "maybe / perhaps",
+      "ex": "A lo mejor llego tarde.",
+      "exen": "Maybe I'll arrive late."
+    },
+    {
+      "es": "sea como sea",
+      "en": "one way or another / regardless",
+      "ex": "Sea como sea, terminaremos hoy.",
+      "exen": "One way or another, we'll finish today."
+    },
+    {
+      "es": "me da igual",
+      "en": "it's all the same to me / I don't mind",
+      "ex": "Me da igual qué película veamos.",
+      "exen": "I don't mind which movie we watch."
+    },
+    {
+      "es": "vale la pena",
+      "en": "it's worth it",
+      "ex": "Vale la pena intentarlo.",
+      "exen": "It's worth trying."
+    },
+    {
+      "es": "por lo visto",
+      "en": "apparently",
+      "ex": "Por lo visto, cambiaron los planes.",
+      "exen": "Apparently, they changed the plans."
+    },
+    {
+      "es": "contar con",
+      "en": "to count on / have available",
+      "ex": "Puedes contar conmigo.",
+      "exen": "You can count on me."
+    },
+    {
+      "es": "fijarse en",
+      "en": "to notice / pay attention to",
+      "ex": "No me fijé en la hora.",
+      "exen": "I didn't notice the time."
+    },
+    {
+      "es": "convertirse en",
+      "en": "to become",
+      "ex": "La ciudad se convirtió en un destino turístico.",
+      "exen": "The city became a tourist destination."
+    },
+    {
+      "es": "pasar por",
+      "en": "to go through (a situation)",
+      "ex": "Está pasando por un momento difícil.",
+      "exen": "They're going through a hard time."
+    },
+    {
+      "es": "llevarse bien",
+      "en": "to get along well",
+      "ex": "Me llevo bien con mis compañeros.",
+      "exen": "I get along well with my coworkers."
+    },
+    {
+      "es": "dar la razón",
+      "en": "to admit someone is right",
+      "ex": "Al final le di la razón.",
+      "exen": "In the end I admitted he was right."
+    },
+    {
+      "es": "caer bien / mal",
+      "en": "to make a good/bad impression on someone",
+      "ex": "Ese profesor me cae muy bien.",
+      "exen": "I really like that teacher (he comes across right to me)."
+    },
+    {
+      "es": "por lo tanto",
+      "en": "therefore / so",
+      "ex": "No estudié; por lo tanto, suspendí.",
+      "exen": "I didn't study; therefore, I failed."
+    },
+    {
+      "es": "en cuanto",
+      "en": "as soon as",
+      "ex": "Te llamo en cuanto llegue.",
+      "exen": "I'll call you as soon as I arrive."
+    },
+    {
+      "es": "mientras tanto",
+      "en": "meanwhile",
+      "ex": "Ve preparando la mesa; mientras tanto, yo cocino.",
+      "exen": "Go set the table; meanwhile, I'll cook."
+    },
+    {
+      "es": "de vez en cuando",
+      "en": "once in a while",
+      "ex": "Solo salimos de vez en cuando.",
+      "exen": "We only go out once in a while."
+    },
+    {
+      "es": "ni siquiera",
+      "en": "not even",
+      "ex": "Ni siquiera me saludó.",
+      "exen": "He didn't even say hello to me."
+    },
+    {
+      "es": "a menudo",
+      "en": "often",
+      "ex": "Voy al gimnasio a menudo.",
+      "exen": "I go to the gym often."
+    },
+    {
+      "es": "acabar de",
+      "en": "to have just (done something)",
+      "ex": "Acabo de terminar el informe.",
+      "exen": "I just finished the report."
+    },
+    {
+      "es": "ponerse a",
+      "en": "to start (doing something)",
+      "ex": "Se puso a llorar de repente.",
+      "exen": "She suddenly started crying."
+    },
+    {
+      "es": "volver a",
+      "en": "to do (something) again",
+      "ex": "Volví a leer el correo dos veces.",
+      "exen": "I read the email again twice."
+    },
+    {
+      "es": "pensar en",
+      "en": "to think about",
+      "ex": "Sigo pensando en lo que dijiste.",
+      "exen": "I keep thinking about what you said."
+    },
+    {
+      "es": "depender de",
+      "en": "to depend on",
+      "ex": "Todo depende del tiempo que tengamos.",
+      "exen": "It all depends on the time we have."
+    },
+    {
+      "es": "encargarse de",
+      "en": "to take charge of / handle",
+      "ex": "Yo me encargo de las reservas.",
+      "exen": "I'll take care of the reservations."
+    },
+    {
+      "es": "arrepentirse de",
+      "en": "to regret",
+      "ex": "No me arrepiento de nada.",
+      "exen": "I don't regret anything."
+    },
+    {
+      "es": "tener en cuenta",
+      "en": "to keep in mind / take into account",
+      "ex": "Ten en cuenta que hay tráfico a esa hora.",
+      "exen": "Keep in mind there's traffic at that hour."
+    }
+  ],
+  "VOCAB_EASY": [
+    {
+      "es": "casa",
+      "en": "house",
+      "opts": [
+        "house",
+        "car",
+        "chair"
+      ]
+    },
+    {
+      "es": "comer",
+      "en": "to eat",
+      "opts": [
+        "to eat",
+        "to sleep",
+        "to run"
+      ]
+    },
+    {
+      "es": "trabajar",
+      "en": "to work",
+      "opts": [
+        "to work",
+        "to play",
+        "to dance"
+      ]
+    },
+    {
+      "es": "feliz",
+      "en": "happy",
+      "opts": [
+        "happy",
+        "sad",
+        "tired"
+      ]
+    },
+    {
+      "es": "rápido",
+      "en": "fast",
+      "opts": [
+        "fast",
+        "slow",
+        "heavy"
+      ]
+    },
+    {
+      "es": "amigo",
+      "en": "friend",
+      "opts": [
+        "friend",
+        "enemy",
+        "teacher"
+      ]
+    },
+    {
+      "es": "agua",
+      "en": "water",
+      "opts": [
+        "water",
+        "bread",
+        "fire"
+      ]
+    },
+    {
+      "es": "grande",
+      "en": "big",
+      "opts": [
+        "big",
+        "small",
+        "cheap"
+      ]
+    },
+    {
+      "es": "bonito",
+      "en": "pretty / nice",
+      "opts": [
+        "pretty / nice",
+        "ugly",
+        "expensive"
+      ]
+    },
+    {
+      "es": "temprano",
+      "en": "early",
+      "opts": [
+        "early",
+        "late",
+        "never"
+      ]
+    },
+    {
+      "es": "cansado",
+      "en": "tired",
+      "opts": [
+        "tired",
+        "excited",
+        "hungry"
+      ]
+    },
+    {
+      "es": "barato",
+      "en": "cheap",
+      "opts": [
+        "cheap",
+        "expensive",
+        "heavy"
+      ]
+    },
+    {
+      "es": "cerca",
+      "en": "near",
+      "opts": [
+        "near",
+        "far",
+        "empty"
+      ]
+    },
+    {
+      "es": "empezar",
+      "en": "to start",
+      "opts": [
+        "to start",
+        "to finish",
+        "to forget"
+      ]
+    },
+    {
+      "es": "ayudar",
+      "en": "to help",
+      "opts": [
+        "to help",
+        "to hurt",
+        "to ignore"
+      ]
+    },
+    {
+      "es": "esperar",
+      "en": "to wait / to hope",
+      "opts": [
+        "to wait / to hope",
+        "to leave",
+        "to lose"
+      ]
+    },
+    {
+      "es": "buscar",
+      "en": "to look for",
+      "opts": [
+        "to look for",
+        "to find",
+        "to hide"
+      ]
+    },
+    {
+      "es": "entender",
+      "en": "to understand",
+      "opts": [
+        "to understand",
+        "to forget",
+        "to explain"
+      ]
+    }
+  ],
+  "LISTEN": [
+    {
+      "es": "¿A qué hora quedamos mañana?",
+      "en": "What time are we meeting tomorrow?"
+    },
+    {
+      "es": "No he tenido tiempo de llamarte esta semana.",
+      "en": "I haven't had time to call you this week."
+    },
+    {
+      "es": "¿Te importaría cerrar la ventana?",
+      "en": "Would you mind closing the window?"
+    },
+    {
+      "es": "Llevo horas esperando el autobús.",
+      "en": "I've been waiting for the bus for hours."
+    },
+    {
+      "es": "Creo que nos hemos equivocado de camino.",
+      "en": "I think we took the wrong way."
+    },
+    {
+      "es": "¿Puedes repetir eso más despacio, por favor?",
+      "en": "Can you repeat that more slowly, please?"
+    },
+    {
+      "es": "Me encantaría, pero ya tengo planes.",
+      "en": "I'd love to, but I already have plans."
+    },
+    {
+      "es": "Se me olvidó por completo avisarte.",
+      "en": "I completely forgot to let you know."
+    },
+    {
+      "es": "¿Qué tal si lo dejamos para el fin de semana?",
+      "en": "What if we leave it for the weekend?"
+    },
+    {
+      "es": "No estoy segura de que sea buena idea.",
+      "en": "I'm not sure it's a good idea."
+    },
+    {
+      "es": "Hace un rato que no sé nada de ella.",
+      "en": "I haven't heard from her in a while."
+    },
+    {
+      "es": "¿Te apetece tomar algo antes de irnos?",
+      "en": "Do you feel like grabbing a drink before we go?"
+    },
+    {
+      "es": "No sabía que ya te habías mudado.",
+      "en": "I didn't know you had already moved."
+    },
+    {
+      "es": "¿Os importa si llego un poco tarde?",
+      "en": "Do you mind if I arrive a little late?"
+    },
+    {
+      "es": "Al final decidimos quedarnos en casa.",
+      "en": "In the end we decided to stay home."
+    },
+    {
+      "es": "¿Sabes si van a arreglar el ascensor pronto?",
+      "en": "Do you know if they're going to fix the elevator soon?"
+    },
+    {
+      "es": "Me hubiera gustado avisarte antes.",
+      "en": "I would have liked to let you know earlier."
+    }
+  ],
+  "LISTEN_EASY": [
+    {
+      "es": "¿Dónde está el baño?",
+      "wrong": [
+        "¿Dónde está el banco?",
+        "¿Cuándo está el baño?"
+      ]
+    },
+    {
+      "es": "Quiero un café, por favor.",
+      "wrong": [
+        "Quiero un té, por favor.",
+        "Quiero más café, por favor."
+      ]
+    },
+    {
+      "es": "¿Cómo te llamas?",
+      "wrong": [
+        "¿Cómo te llaman?",
+        "¿Cómo se llama?"
+      ]
+    },
+    {
+      "es": "Hace mucho calor hoy.",
+      "wrong": [
+        "Hace mucho frío hoy.",
+        "Hizo mucho calor ayer."
+      ]
+    },
+    {
+      "es": "No entiendo esta palabra.",
+      "wrong": [
+        "No entiendo esa palabra.",
+        "No entiendo estas palabras."
+      ]
+    },
+    {
+      "es": "¿A qué hora abre la tienda?",
+      "wrong": [
+        "¿A qué hora cierra la tienda?",
+        "¿A qué hora abre la oficina?"
+      ]
+    },
+    {
+      "es": "Necesito ayuda, por favor.",
+      "wrong": [
+        "Necesito agua, por favor.",
+        "Necesito ayuda, señor."
+      ]
+    },
+    {
+      "es": "Vivo cerca de aquí.",
+      "wrong": [
+        "Vivo lejos de aquí.",
+        "Viví cerca de aquí."
+      ]
+    }
+  ],
+  "SPEAK": [
+    "Buenos días, ¿cómo has dormido?",
+    "Necesito cambiar mi vuelo para el jueves.",
+    "¿Me puedes recomendar un buen restaurante por aquí?",
+    "Estoy aprendiendo español desde hace casi dos años.",
+    "¿Podrías ayudarme a entender esta palabra?",
+    "Prefiero quedarme en casa este fin de semana.",
+    "¿Cuánto cuesta esto, más o menos?",
+    "Perdona, no te he entendido bien.",
+    "Voy a pedir lo mismo que tú.",
+    "¿Nos vemos en la entrada a las ocho?",
+    "Llevo un rato intentando entender esta frase.",
+    "¿Te importaría hablar un poco más despacio?",
+    "Creo que ya nos habíamos conocido antes.",
+    "Si tienes tiempo, me encantaría practicar contigo.",
+    "No estoy completamente seguro, pero creo que sí.",
+    "¿Qué harías tú en mi lugar?"
+  ],
+  "SPEAK_EASY": [
+    "¿Dónde está el baño?",
+    "Quiero un café, por favor.",
+    "Mucho gusto.",
+    "No hablo mucho español.",
+    "¿Puedes ayudarme?",
+    "Está bien, gracias.",
+    "¿Cuánto cuesta?",
+    "Hasta luego."
+  ],
+  "GRAMMAR": [
+    {
+      "verb": "hablar",
+      "pronoun": "yo",
+      "tense": "present",
+      "sentence": "Yo ___ español todos los días.",
+      "answer": "hablo"
+    },
+    {
+      "verb": "comer",
+      "pronoun": "nosotros",
+      "tense": "present",
+      "sentence": "Nosotros ___ paella los domingos.",
+      "answer": "comemos"
+    },
+    {
+      "verb": "vivir",
+      "pronoun": "ella",
+      "tense": "present",
+      "sentence": "Ella ___ en Madrid desde 2020.",
+      "answer": "vive"
+    },
+    {
+      "verb": "ser",
+      "pronoun": "tú",
+      "tense": "present",
+      "sentence": "¿De dónde ___ tú?",
+      "answer": "eres"
+    },
+    {
+      "verb": "estar",
+      "pronoun": "nosotros",
+      "tense": "present",
+      "sentence": "Nosotros ___ muy cansados hoy.",
+      "answer": "estamos"
+    },
+    {
+      "verb": "tener",
+      "pronoun": "ellos",
+      "tense": "present",
+      "sentence": "Ellos ___ dos gatos.",
+      "answer": "tienen"
+    },
+    {
+      "verb": "ir",
+      "pronoun": "yo",
+      "tense": "present",
+      "sentence": "Mañana ___ al médico.",
+      "answer": "voy"
+    },
+    {
+      "verb": "hablar",
+      "pronoun": "yo",
+      "tense": "preterite",
+      "sentence": "Ayer ___ con mi hermano por teléfono.",
+      "answer": "hablé"
+    },
+    {
+      "verb": "comer",
+      "pronoun": "ella",
+      "tense": "preterite",
+      "sentence": "Anoche ella ___ demasiado.",
+      "answer": "comió"
+    },
+    {
+      "verb": "ir",
+      "pronoun": "nosotros",
+      "tense": "preterite",
+      "sentence": "El año pasado ___ a Perú.",
+      "answer": "fuimos"
+    },
+    {
+      "verb": "tener",
+      "pronoun": "yo",
+      "tense": "preterite",
+      "sentence": "___ un problema con el coche la semana pasada.",
+      "answer": "tuve"
+    },
+    {
+      "verb": "ser",
+      "pronoun": "ellos",
+      "tense": "preterite",
+      "sentence": "Ellos ___ mis vecinos durante diez años.",
+      "answer": "fueron"
+    },
+    {
+      "verb": "hablar",
+      "pronoun": "tú",
+      "tense": "future",
+      "sentence": "¿___ con el jefe mañana?",
+      "answer": "hablarás"
+    },
+    {
+      "verb": "tener",
+      "pronoun": "nosotros",
+      "tense": "future",
+      "sentence": "El próximo mes ___ más tiempo libre.",
+      "answer": "tendremos"
+    },
+    {
+      "verb": "ir",
+      "pronoun": "yo",
+      "tense": "conditional",
+      "sentence": "Si pudiera, ___ de vacaciones ahora mismo.",
+      "answer": "iría"
+    },
+    {
+      "verb": "poder",
+      "pronoun": "tú",
+      "tense": "conditional",
+      "sentence": "¿___ ayudarme un momento?",
+      "answer": "podrías"
+    },
+    {
+      "verb": "hacer",
+      "pronoun": "yo",
+      "tense": "present",
+      "sentence": "Nunca ___ ejercicio por la mañana.",
+      "answer": "hago"
+    },
+    {
+      "verb": "decir",
+      "pronoun": "ella",
+      "tense": "preterite",
+      "sentence": "Ella me ___ la verdad al final.",
+      "answer": "dijo"
+    },
+    {
+      "verb": "querer",
+      "pronoun": "nosotros",
+      "tense": "present",
+      "sentence": "___ salir a caminar un rato.",
+      "answer": "queremos"
+    },
+    {
+      "verb": "saber",
+      "pronoun": "yo",
+      "tense": "preterite",
+      "sentence": "No lo ___ hasta ayer.",
+      "answer": "supe"
+    },
+    {
+      "verb": "poner",
+      "pronoun": "tú",
+      "tense": "present",
+      "sentence": "¿Dónde ___ las llaves normalmente?",
+      "answer": "pones"
+    }
+  ],
+  "GRAMMAR_EASY": [
+    {
+      "verb": "hablar",
+      "pronoun": "yo",
+      "sentence": "Yo ___ español todos los días.",
+      "answer": "hablo",
+      "opts": [
+        "hablo",
+        "habla",
+        "hablas"
+      ]
+    },
+    {
+      "verb": "comer",
+      "pronoun": "nosotros",
+      "sentence": "Nosotros ___ paella los domingos.",
+      "answer": "comemos",
+      "opts": [
+        "comemos",
+        "come",
+        "comen"
+      ]
+    },
+    {
+      "verb": "vivir",
+      "pronoun": "ella",
+      "sentence": "Ella ___ en Madrid.",
+      "answer": "vive",
+      "opts": [
+        "vive",
+        "vivo",
+        "viven"
+      ]
+    },
+    {
+      "verb": "ser",
+      "pronoun": "tú",
+      "sentence": "¿De dónde ___ tú?",
+      "answer": "eres",
+      "opts": [
+        "eres",
+        "es",
+        "soy"
+      ]
+    },
+    {
+      "verb": "estar",
+      "pronoun": "nosotros",
+      "sentence": "Nosotros ___ muy cansados hoy.",
+      "answer": "estamos",
+      "opts": [
+        "estamos",
+        "están",
+        "está"
+      ]
+    },
+    {
+      "verb": "tener",
+      "pronoun": "ellos",
+      "sentence": "Ellos ___ dos gatos.",
+      "answer": "tienen",
+      "opts": [
+        "tienen",
+        "tiene",
+        "tenemos"
+      ]
+    },
+    {
+      "verb": "ir",
+      "pronoun": "yo",
+      "sentence": "Mañana ___ al médico.",
+      "answer": "voy",
+      "opts": [
+        "voy",
+        "va",
+        "vamos"
+      ]
+    }
+  ],
+  "IMPROV_TOPICS": [
+    {
+      "topic": "Tu rutina diaria",
+      "prompts": [
+        "¿A qué hora te levantas?",
+        "¿Qué haces antes de trabajar?",
+        "¿Qué es lo último que haces antes de dormir?"
+      ]
+    },
+    {
+      "topic": "Tu trabajo o estudios",
+      "prompts": [
+        "¿A qué te dedicas?",
+        "¿Qué es lo que más te gusta de tu trabajo?",
+        "¿Qué cambiarías si pudieras?"
+      ]
+    },
+    {
+      "topic": "El fin de semana pasado",
+      "prompts": [
+        "¿Qué hiciste el sábado?",
+        "¿Con quién estuviste?",
+        "¿Volverías a hacer lo mismo?"
+      ]
+    },
+    {
+      "topic": "Tu ciudad",
+      "prompts": [
+        "¿Cómo es tu ciudad?",
+        "¿Qué le recomendarías a un turista?",
+        "¿Qué es lo que menos te gusta de vivir ahí?"
+      ]
+    },
+    {
+      "topic": "Un amigo o familiar",
+      "prompts": [
+        "Descríbelo físicamente y de carácter.",
+        "¿Cómo os conocisteis?",
+        "¿Qué es lo que más admiras de esa persona?"
+      ]
+    },
+    {
+      "topic": "Tus planes para el próximo mes",
+      "prompts": [
+        "¿Qué tienes planeado?",
+        "¿Hay algo que te preocupa?",
+        "¿Qué esperas conseguir?"
+      ]
+    },
+    {
+      "topic": "Una película o serie",
+      "prompts": [
+        "¿De qué trata?",
+        "¿Por qué te gustó o no te gustó?",
+        "¿A quién se la recomendarías?"
+      ]
+    },
+    {
+      "topic": "Si ganaras la lotería",
+      "prompts": [
+        "¿Qué harías primero?",
+        "¿Seguirías trabajando?",
+        "¿Con quién lo compartirías?"
+      ]
+    },
+    {
+      "topic": "Un problema que resolviste",
+      "prompts": [
+        "¿Qué pasó?",
+        "¿Cómo lo solucionaste?",
+        "¿Qué aprendiste de eso?"
+      ]
+    },
+    {
+      "topic": "Tu comida favorita",
+      "prompts": [
+        "¿Qué es y por qué te gusta?",
+        "¿Sabes cocinarla?",
+        "¿Cuándo la comiste por última vez?"
+      ]
+    }
+  ],
+  "STARTER_PHRASES": [
+    "Primero...",
+    "Normalmente yo...",
+    "Lo que más me gusta es...",
+    "Por ejemplo...",
+    "Al final...",
+    "Para mí..."
+  ]
+}
