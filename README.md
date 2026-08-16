@@ -33,6 +33,24 @@ A manual export/import "backup code" feature is also still in the app (bottom of
 the page) as a fallback if the backend or your connection is ever having issues —
 it base64-encodes your progress into a text blob you can copy/paste between devices.
 
+## Growing content with AI
+
+The original content set (44 vocab words, etc.) runs out fast. Every station's
+"round complete" screen has a **✨ Generate more** button that calls the Claude
+API to write a fresh batch of items (10 at a time) in the same shape as the
+existing content, skips anything that duplicates what's already there, and saves
+it to Postgres — so it keeps growing and syncs across devices like everything
+else. Vocabulario also auto-generates in the background once you've mastered
+80% of the current word bank, so the deck rarely goes stale.
+
+This needs an `ANTHROPIC_API_KEY` (get one at
+[console.anthropic.com](https://console.anthropic.com/settings/keys)) set in
+your environment — without it, `/api/content/generate` returns an error but
+everything else in the app keeps working. It defaults to `claude-opus-5`;
+set `ANTHROPIC_MODEL=claude-haiku-4-5` if you'd rather trade a bit of quality
+for a much cheaper per-call cost (this is short, well-defined generation —
+word lists, example sentences — Haiku handles it fine).
+
 ## Running locally
 
 1. Get a free Postgres database — see [Deploying](#deploying) below for options.
@@ -65,6 +83,7 @@ Supabase's free Postgres tier works the same way if you'd rather use that instea
 4. Under **Environment**, add:
    - `DATABASE_URL` — the Neon connection string from step 1.
    - `PASSCODE` — a long random string, e.g. generate one with `openssl rand -hex 24`.
+   - `ANTHROPIC_API_KEY` — optional, only needed for the "Generate more" AI content feature.
 5. Deploy. Render gives you a stable `https://your-app.onrender.com` URL that works
    from both your phone and laptop.
 

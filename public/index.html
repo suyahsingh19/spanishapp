@@ -432,6 +432,84 @@ async function apiSet(obj){
   if(!res.ok) throw new Error('Sync write failed: '+res.status);
 }
 
+/* ---------- AI CONTENT GENERATION (grows the practice bank over time) ---------- */
+async function apiGenerate(category, count){
+  const res = await fetch('/api/content/generate', {
+    method: 'POST',
+    headers: { 'X-Passcode': syncConfig.passcode, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ category, count: count || 10 })
+  });
+  if(!res.ok){
+    const body = await res.json().catch(()=>({}));
+    throw new Error(body.error || ('Generate failed: '+res.status));
+  }
+  const data = await res.json();
+  return data.items || [];
+}
+
+function ensureVocabSRS(bank, srsObj){
+  bank.forEach((v)=>{
+    const key = slugify(v.es);
+    if(!srsObj[key]) srsObj[key] = {box:0, due:0, seen:0, correct:0};
+  });
+}
+
+function appendGenerated(category, items){
+  if(!items.length) return;
+  if(category === 'VOCAB'){ VOCAB.push(...items); ensureVocabSRS(VOCAB, progress.srs); }
+  else if(category === 'VOCAB_EASY'){ VOCAB_EASY.push(...items); ensureVocabSRS(VOCAB_EASY, progress.srsEasy); }
+  else if(category === 'LISTEN'){ LISTEN.push(...items); }
+  else if(category === 'LISTEN_EASY'){ LISTEN_EASY.push(...items); }
+  else if(category === 'SPEAK'){ SPEAK.push(...items); }
+  else if(category === 'SPEAK_EASY'){ SPEAK_EASY.push(...items); }
+  else if(category === 'GRAMMAR'){ GRAMMAR.push(...items); }
+  else if(category === 'GRAMMAR_EASY'){ GRAMMAR_EASY.push(...items); }
+  else if(category === 'IMPROV_TOPICS'){ IMPROV_TOPICS.push(...items); }
+}
+
+/* Wires a "Generate more" button that lives at #<btnId> with a status line at #<msgId>. */
+function wireGenerateButton(btnId, msgId, category, onDone){
+  const btn = document.getElementById(btnId);
+  if(!btn) return;
+  btn.onclick = async ()=>{
+    btn.disabled = true;
+    const msg = document.getElementById(msgId);
+    if(msg) msg.textContent = '✨ Generating more material with AI…';
+    try{
+      const items = await apiGenerate(category, 10);
+      appendGenerated(category, items);
+      if(msg) msg.textContent = items.length
+        ? `✓ Added ${items.length} new items to ${category}.`
+        : 'No new items came back — try again in a moment.';
+      renderDashboard();
+      if(onDone) onDone(items);
+    }catch(e){
+      if(msg) msg.textContent = 'Generation failed: '+e.message;
+    }finally{
+      btn.disabled = false;
+    }
+  };
+}
+
+let lastAutoGenAt = {};
+function maybeAutoGenerateVocab(){
+  const bank = vocabBank();
+  const srs = vocabSRS();
+  const mastered = bank.filter(v=>{
+    const s = srs[slugify(v.es)];
+    return s && s.box >= 4;
+  }).length;
+  const category = progress.difficulty === 'easy' ? 'VOCAB_EASY' : 'VOCAB';
+  const now = Date.now();
+  if(bank.length && mastered / bank.length >= 0.8 && (now - (lastAutoGenAt[category]||0)) > 5*60*1000){
+    lastAutoGenAt[category] = now;
+    apiGenerate(category, 10).then(items=>{
+      appendGenerated(category, items);
+      renderDashboard();
+    }).catch(()=>{ /* silent — manual "Generate more" button is the fallback */ });
+  }
+}
+
 async function loadProgress(){
   loadSyncConfig();
   const syncDot = document.getElementById('syncDot');
@@ -657,9 +735,15 @@ function drawVocabCard(){
       <div class="panel-head"><h3 class="panel-title">Vocabulario</h3><span class="panel-progress">round complete</span></div>
       <div class="card-stage">
         <p class="prompt-sub">Nice work — that's a full round.</p>
-        <div class="btn-row"><button class="btn primary" id="vAgain">Practice another round</button></div>
+        <div class="btn-row">
+          <button class="btn primary" id="vAgain">Practice another round</button>
+          <button class="btn ghost" id="vGenerate">✨ Generate more words</button>
+        </div>
+        <p class="prompt-sub" id="vGenerateMsg" style="margin-top:12px;"></p>
       </div>`;
     document.getElementById('vAgain').onclick = renderVocab;
+    wireGenerateButton('vGenerate', 'vGenerateMsg', progress.difficulty === 'easy' ? 'VOCAB_EASY' : 'VOCAB');
+    maybeAutoGenerateVocab();
     bumpSession();
     return;
   }
@@ -801,9 +885,14 @@ function drawListenCard(){
       <div class="panel-head"><h3 class="panel-title">Escucha</h3><span class="panel-progress">round complete</span></div>
       <div class="card-stage">
         <p class="prompt-sub">Round done. Real conversation is faster than any of these — that's the point of drilling it slow first.</p>
-        <div class="btn-row"><button class="btn primary" id="lAgain">Another round</button></div>
+        <div class="btn-row">
+          <button class="btn primary" id="lAgain">Another round</button>
+          <button class="btn ghost" id="lGenerate">✨ Generate more sentences</button>
+        </div>
+        <p class="prompt-sub" id="lGenerateMsg" style="margin-top:12px;"></p>
       </div>`;
     document.getElementById('lAgain').onclick = renderListen;
+    wireGenerateButton('lGenerate', 'lGenerateMsg', progress.difficulty === 'easy' ? 'LISTEN_EASY' : 'LISTEN');
     bumpSession();
     return;
   }
@@ -957,9 +1046,14 @@ function drawSpeakCard(){
       <div class="panel-head"><h3 class="panel-title">Habla</h3><span class="panel-progress">round complete</span></div>
       <div class="card-stage">
         <p class="prompt-sub">That's the round. This is the drill Duolingo skips almost entirely — keep it in rotation.</p>
-        <div class="btn-row"><button class="btn primary" id="sAgain">Another round</button></div>
+        <div class="btn-row">
+          <button class="btn primary" id="sAgain">Another round</button>
+          <button class="btn ghost" id="sGenerate">✨ Generate more phrases</button>
+        </div>
+        <p class="prompt-sub" id="sGenerateMsg" style="margin-top:12px;"></p>
       </div>`;
     document.getElementById('sAgain').onclick = renderSpeak;
+    wireGenerateButton('sGenerate', 'sGenerateMsg', progress.difficulty === 'easy' ? 'SPEAK_EASY' : 'SPEAK');
     bumpSession();
     return;
   }
@@ -1042,9 +1136,14 @@ function drawGramCard(){
       <div class="panel-head"><h3 class="panel-title">Gramática</h3><span class="panel-progress">round complete</span></div>
       <div class="card-stage">
         <p class="prompt-sub">Full pass through the conjugation set done.</p>
-        <div class="btn-row"><button class="btn primary" id="gAgain">Another round</button></div>
+        <div class="btn-row">
+          <button class="btn primary" id="gAgain">Another round</button>
+          <button class="btn ghost" id="gGenerate">✨ Generate more drills</button>
+        </div>
+        <p class="prompt-sub" id="gGenerateMsg" style="margin-top:12px;"></p>
       </div>`;
     document.getElementById('gAgain').onclick = renderGrammar;
+    wireGenerateButton('gGenerate', 'gGenerateMsg', progress.difficulty === 'easy' ? 'GRAMMAR_EASY' : 'GRAMMAR');
     bumpSession();
     return;
   }
@@ -1257,11 +1356,15 @@ function analyzeImprov(){
       const r = parseInt(b.dataset.r);
       logProduction(r>=2);
       bumpSession();
-      const nextBtn = document.createElement('button');
-      nextBtn.className = 'btn primary'; nextBtn.textContent = 'Nuevo tema →';
-      nextBtn.style.marginTop = '16px'; nextBtn.style.display='block'; nextBtn.style.marginLeft='auto'; nextBtn.style.marginRight='auto';
-      nextBtn.onclick = renderImprov;
-      results.appendChild(nextBtn);
+      const btnRow = document.createElement('div');
+      btnRow.className = 'btn-row'; btnRow.style.marginTop = '16px';
+      btnRow.innerHTML = `<button class="btn primary" id="improvNext">Nuevo tema →</button><button class="btn ghost" id="improvGenerate">✨ Generate more topics</button>`;
+      results.appendChild(btnRow);
+      const genMsg = document.createElement('p');
+      genMsg.className = 'prompt-sub'; genMsg.id = 'improvGenerateMsg'; genMsg.style.marginTop = '12px';
+      results.appendChild(genMsg);
+      document.getElementById('improvNext').onclick = renderImprov;
+      wireGenerateButton('improvGenerate', 'improvGenerateMsg', 'IMPROV_TOPICS');
       document.querySelectorAll('.self-rate .rate-btn').forEach(x=>x.disabled=true);
       renderDashboard();
     };

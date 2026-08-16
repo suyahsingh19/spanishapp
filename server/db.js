@@ -20,6 +20,14 @@ async function init() {
       updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
     )
   `);
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS generated_content (
+      id SERIAL PRIMARY KEY,
+      category TEXT NOT NULL,
+      item JSONB NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    )
+  `);
 }
 
 async function getProgress() {
@@ -35,4 +43,32 @@ async function setProgress(data) {
   );
 }
 
-module.exports = { pool, init, getProgress, setProgress };
+async function getGeneratedContent() {
+  const res = await pool.query(
+    'SELECT category, item FROM generated_content ORDER BY created_at ASC'
+  );
+  const out = {};
+  for (const row of res.rows) {
+    if (!out[row.category]) out[row.category] = [];
+    out[row.category].push(row.item);
+  }
+  return out;
+}
+
+async function appendGeneratedItems(category, items) {
+  for (const item of items) {
+    await pool.query(
+      'INSERT INTO generated_content (category, item) VALUES ($1, $2::jsonb)',
+      [category, JSON.stringify(item)]
+    );
+  }
+}
+
+module.exports = {
+  pool,
+  init,
+  getProgress,
+  setProgress,
+  getGeneratedContent,
+  appendGeneratedItems,
+};

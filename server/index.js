@@ -4,6 +4,7 @@ const crypto = require('crypto');
 const express = require('express');
 const rateLimit = require('express-rate-limit');
 const db = require('./db');
+const generate = require('./generate');
 
 const PORT = process.env.PORT || 3000;
 const PASSCODE = process.env.PASSCODE || '';
@@ -40,10 +41,45 @@ const progressLimiter = rateLimit({
   legacyHeaders: false,
 });
 
+const generateLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 app.get('/health', (req, res) => res.json({ ok: true }));
 
-app.get('/api/content', (req, res) => {
-  res.json(content);
+app.get('/api/content', async (req, res) => {
+  try {
+    const generated = await db.getGeneratedContent();
+    const merged = {};
+    for (const key of Object.keys(content)) {
+      merged[key] = [...content[key], ...(generated[key] || [])];
+    }
+    res.json(merged);
+  } catch (e) {
+    console.error('GET /api/content failed', e);
+    res.status(500).json({ error: 'failed to load content' });
+  }
+});
+
+app.post('/api/content/generate', generateLimiter, requirePasscode, async (req, res) => {
+  const { category, count } = req.body || {};
+  if (!generate.SCHEMAS[category]) {
+    return res.status(400).json({ error: 'invalid category' });
+  }
+  const n = Math.min(Math.max(parseInt(count, 10) || 10, 1), 20);
+  try {
+    const generatedSoFar = await db.getGeneratedContent();
+    const existing = [...(content[category] || []), ...(generatedSoFar[category] || [])];
+    const newItems = await generate.generateItems(category, existing, n);
+    if (newItems.length) await db.appendGeneratedItems(category, newItems);
+    res.json({ items: newItems, total: existing.length + newItems.length });
+  } catch (e) {
+    console.error('POST /api/content/generate failed', e);
+    res.status(500).json({ error: e.message || 'failed to generate content' });
+  }
 });
 
 app.get('/api/progress', progressLimiter, requirePasscode, async (req, res) => {
