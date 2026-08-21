@@ -558,32 +558,104 @@
     }
   ],
   "SPEAK": [
-    "Buenos días, ¿cómo has dormido?",
-    "Necesito cambiar mi vuelo para el jueves.",
-    "¿Me puedes recomendar un buen restaurante por aquí?",
-    "Estoy aprendiendo español desde hace casi dos años.",
-    "¿Podrías ayudarme a entender esta palabra?",
-    "Prefiero quedarme en casa este fin de semana.",
-    "¿Cuánto cuesta esto, más o menos?",
-    "Perdona, no te he entendido bien.",
-    "Voy a pedir lo mismo que tú.",
-    "¿Nos vemos en la entrada a las ocho?",
-    "Llevo un rato intentando entender esta frase.",
-    "¿Te importaría hablar un poco más despacio?",
-    "Creo que ya nos habíamos conocido antes.",
-    "Si tienes tiempo, me encantaría practicar contigo.",
-    "No estoy completamente seguro, pero creo que sí.",
-    "¿Qué harías tú en mi lugar?"
+    {
+      "es": "Buenos días, ¿cómo has dormido?",
+      "en": "Good morning, how did you sleep?"
+    },
+    {
+      "es": "Necesito cambiar mi vuelo para el jueves.",
+      "en": "I need to change my flight to Thursday."
+    },
+    {
+      "es": "¿Me puedes recomendar un buen restaurante por aquí?",
+      "en": "Can you recommend a good restaurant around here?"
+    },
+    {
+      "es": "Estoy aprendiendo español desde hace casi dos años.",
+      "en": "I've been learning Spanish for almost two years."
+    },
+    {
+      "es": "¿Podrías ayudarme a entender esta palabra?",
+      "en": "Could you help me understand this word?"
+    },
+    {
+      "es": "Prefiero quedarme en casa este fin de semana.",
+      "en": "I'd rather stay home this weekend."
+    },
+    {
+      "es": "¿Cuánto cuesta esto, más o menos?",
+      "en": "How much does this cost, roughly?"
+    },
+    {
+      "es": "Perdona, no te he entendido bien.",
+      "en": "Sorry, I didn't quite understand you."
+    },
+    {
+      "es": "Voy a pedir lo mismo que tú.",
+      "en": "I'm going to order the same as you."
+    },
+    {
+      "es": "¿Nos vemos en la entrada a las ocho?",
+      "en": "Shall we meet at the entrance at eight?"
+    },
+    {
+      "es": "Llevo un rato intentando entender esta frase.",
+      "en": "I've been trying to understand this sentence for a while."
+    },
+    {
+      "es": "¿Te importaría hablar un poco más despacio?",
+      "en": "Would you mind speaking a little more slowly?"
+    },
+    {
+      "es": "Creo que ya nos habíamos conocido antes.",
+      "en": "I think we had already met before."
+    },
+    {
+      "es": "Si tienes tiempo, me encantaría practicar contigo.",
+      "en": "If you have time, I'd love to practice with you."
+    },
+    {
+      "es": "No estoy completamente seguro, pero creo que sí.",
+      "en": "I'm not completely sure, but I think so."
+    },
+    {
+      "es": "¿Qué harías tú en mi lugar?",
+      "en": "What would you do in my place?"
+    }
   ],
   "SPEAK_EASY": [
-    "¿Dónde está el baño?",
-    "Quiero un café, por favor.",
-    "Mucho gusto.",
-    "No hablo mucho español.",
-    "¿Puedes ayudarme?",
-    "Está bien, gracias.",
-    "¿Cuánto cuesta?",
-    "Hasta luego."
+    {
+      "es": "¿Dónde está el baño?",
+      "en": "Where is the bathroom?"
+    },
+    {
+      "es": "Quiero un café, por favor.",
+      "en": "I want a coffee, please."
+    },
+    {
+      "es": "Mucho gusto.",
+      "en": "Nice to meet you."
+    },
+    {
+      "es": "No hablo mucho español.",
+      "en": "I don't speak much Spanish."
+    },
+    {
+      "es": "¿Puedes ayudarme?",
+      "en": "Can you help me?"
+    },
+    {
+      "es": "Está bien, gracias.",
+      "en": "That's fine, thanks."
+    },
+    {
+      "es": "¿Cuánto cuesta?",
+      "en": "How much does it cost?"
+    },
+    {
+      "es": "Hasta luego.",
+      "en": "See you later."
+    }
   ],
   "GRAMMAR": [
     {
@@ -591,147 +663,168 @@
       "pronoun": "yo",
       "tense": "present",
       "sentence": "Yo ___ español todos los días.",
-      "answer": "hablo"
+      "answer": "hablo",
+      "en": "I speak Spanish every day."
     },
     {
       "verb": "comer",
       "pronoun": "nosotros",
       "tense": "present",
       "sentence": "Nosotros ___ paella los domingos.",
-      "answer": "comemos"
+      "answer": "comemos",
+      "en": "We eat paella on Sundays."
     },
     {
       "verb": "vivir",
       "pronoun": "ella",
       "tense": "present",
       "sentence": "Ella ___ en Madrid desde 2020.",
-      "answer": "vive"
+      "answer": "vive",
+      "en": "She has lived in Madrid since 2020."
     },
     {
       "verb": "ser",
       "pronoun": "tú",
       "tense": "present",
       "sentence": "¿De dónde ___ tú?",
-      "answer": "eres"
+      "answer": "eres",
+      "en": "Where are you from?"
     },
     {
       "verb": "estar",
       "pronoun": "nosotros",
       "tense": "present",
       "sentence": "Nosotros ___ muy cansados hoy.",
-      "answer": "estamos"
+      "answer": "estamos",
+      "en": "We are very tired today."
     },
     {
       "verb": "tener",
       "pronoun": "ellos",
       "tense": "present",
       "sentence": "Ellos ___ dos gatos.",
-      "answer": "tienen"
+      "answer": "tienen",
+      "en": "They have two cats."
     },
     {
       "verb": "ir",
       "pronoun": "yo",
       "tense": "present",
       "sentence": "Mañana ___ al médico.",
-      "answer": "voy"
+      "answer": "voy",
+      "en": "Tomorrow I'm going to the doctor."
     },
     {
       "verb": "hablar",
       "pronoun": "yo",
       "tense": "preterite",
       "sentence": "Ayer ___ con mi hermano por teléfono.",
-      "answer": "hablé"
+      "answer": "hablé",
+      "en": "Yesterday I talked with my brother on the phone."
     },
     {
       "verb": "comer",
       "pronoun": "ella",
       "tense": "preterite",
       "sentence": "Anoche ella ___ demasiado.",
-      "answer": "comió"
+      "answer": "comió",
+      "en": "Last night she ate too much."
     },
     {
       "verb": "ir",
       "pronoun": "nosotros",
       "tense": "preterite",
       "sentence": "El año pasado ___ a Perú.",
-      "answer": "fuimos"
+      "answer": "fuimos",
+      "en": "Last year we went to Peru."
     },
     {
       "verb": "tener",
       "pronoun": "yo",
       "tense": "preterite",
       "sentence": "___ un problema con el coche la semana pasada.",
-      "answer": "tuve"
+      "answer": "tuve",
+      "en": "I had a problem with the car last week."
     },
     {
       "verb": "ser",
       "pronoun": "ellos",
       "tense": "preterite",
       "sentence": "Ellos ___ mis vecinos durante diez años.",
-      "answer": "fueron"
+      "answer": "fueron",
+      "en": "They were my neighbors for ten years."
     },
     {
       "verb": "hablar",
       "pronoun": "tú",
       "tense": "future",
       "sentence": "¿___ con el jefe mañana?",
-      "answer": "hablarás"
+      "answer": "hablarás",
+      "en": "Will you talk to the boss tomorrow?"
     },
     {
       "verb": "tener",
       "pronoun": "nosotros",
       "tense": "future",
       "sentence": "El próximo mes ___ más tiempo libre.",
-      "answer": "tendremos"
+      "answer": "tendremos",
+      "en": "Next month we'll have more free time."
     },
     {
       "verb": "ir",
       "pronoun": "yo",
       "tense": "conditional",
       "sentence": "Si pudiera, ___ de vacaciones ahora mismo.",
-      "answer": "iría"
+      "answer": "iría",
+      "en": "If I could, I would go on vacation right now."
     },
     {
       "verb": "poder",
       "pronoun": "tú",
       "tense": "conditional",
       "sentence": "¿___ ayudarme un momento?",
-      "answer": "podrías"
+      "answer": "podrías",
+      "en": "Could you help me for a moment?"
     },
     {
       "verb": "hacer",
       "pronoun": "yo",
       "tense": "present",
       "sentence": "Nunca ___ ejercicio por la mañana.",
-      "answer": "hago"
+      "answer": "hago",
+      "en": "I never exercise in the morning."
     },
     {
       "verb": "decir",
       "pronoun": "ella",
       "tense": "preterite",
       "sentence": "Ella me ___ la verdad al final.",
-      "answer": "dijo"
+      "answer": "dijo",
+      "en": "She told me the truth in the end."
     },
     {
       "verb": "querer",
       "pronoun": "nosotros",
       "tense": "present",
       "sentence": "___ salir a caminar un rato.",
-      "answer": "queremos"
+      "answer": "queremos",
+      "en": "We want to go for a walk for a while."
     },
     {
       "verb": "saber",
       "pronoun": "yo",
       "tense": "preterite",
       "sentence": "No lo ___ hasta ayer.",
-      "answer": "supe"
+      "answer": "supe",
+      "en": "I didn't know it until yesterday."
     },
     {
       "verb": "poner",
       "pronoun": "tú",
       "tense": "present",
       "sentence": "¿Dónde ___ las llaves normalmente?",
-      "answer": "pones"
+      "answer": "pones",
+      "en": "Where do you usually put the keys?"
     }
   ],
   "GRAMMAR_EASY": [
@@ -744,7 +837,8 @@
         "hablo",
         "habla",
         "hablas"
-      ]
+      ],
+      "en": "I speak Spanish every day."
     },
     {
       "verb": "comer",
@@ -755,7 +849,8 @@
         "comemos",
         "come",
         "comen"
-      ]
+      ],
+      "en": "We eat paella on Sundays."
     },
     {
       "verb": "vivir",
@@ -766,7 +861,8 @@
         "vive",
         "vivo",
         "viven"
-      ]
+      ],
+      "en": "She lives in Madrid."
     },
     {
       "verb": "ser",
@@ -777,7 +873,8 @@
         "eres",
         "es",
         "soy"
-      ]
+      ],
+      "en": "Where are you from?"
     },
     {
       "verb": "estar",
@@ -788,7 +885,8 @@
         "estamos",
         "están",
         "está"
-      ]
+      ],
+      "en": "We are very tired today."
     },
     {
       "verb": "tener",
@@ -799,7 +897,8 @@
         "tienen",
         "tiene",
         "tenemos"
-      ]
+      ],
+      "en": "They have two cats."
     },
     {
       "verb": "ir",
@@ -810,7 +909,8 @@
         "voy",
         "va",
         "vamos"
-      ]
+      ],
+      "en": "Tomorrow I'm going to the doctor."
     }
   ],
   "IMPROV_TOPICS": [

@@ -30,13 +30,6 @@ function itemObjectSchema(properties, required) {
   };
 }
 
-const STRING_ARRAY_SCHEMA = {
-  type: 'object',
-  properties: { items: { type: 'array', items: { type: 'string' } } },
-  required: ['items'],
-  additionalProperties: false,
-};
-
 const SCHEMAS = {
   VOCAB: itemObjectSchema(
     { es: { type: 'string' }, en: { type: 'string' }, ex: { type: 'string' }, exen: { type: 'string' } },
@@ -54,8 +47,14 @@ const SCHEMAS = {
     { es: { type: 'string' }, wrong: { type: 'array', items: { type: 'string' } } },
     ['es', 'wrong']
   ),
-  SPEAK: STRING_ARRAY_SCHEMA,
-  SPEAK_EASY: STRING_ARRAY_SCHEMA,
+  SPEAK: itemObjectSchema(
+    { es: { type: 'string' }, en: { type: 'string' } },
+    ['es', 'en']
+  ),
+  SPEAK_EASY: itemObjectSchema(
+    { es: { type: 'string' }, en: { type: 'string' } },
+    ['es', 'en']
+  ),
   GRAMMAR: itemObjectSchema(
     {
       verb: { type: 'string' },
@@ -63,8 +62,9 @@ const SCHEMAS = {
       tense: { type: 'string' },
       sentence: { type: 'string' },
       answer: { type: 'string' },
+      en: { type: 'string' },
     },
-    ['verb', 'pronoun', 'tense', 'sentence', 'answer']
+    ['verb', 'pronoun', 'tense', 'sentence', 'answer', 'en']
   ),
   GRAMMAR_EASY: itemObjectSchema(
     {
@@ -73,8 +73,9 @@ const SCHEMAS = {
       sentence: { type: 'string' },
       answer: { type: 'string' },
       opts: { type: 'array', items: { type: 'string' } },
+      en: { type: 'string' },
     },
-    ['verb', 'pronoun', 'sentence', 'answer', 'opts']
+    ['verb', 'pronoun', 'sentence', 'answer', 'opts', 'en']
   ),
   IMPROV_TOPICS: itemObjectSchema(
     { topic: { type: 'string' }, prompts: { type: 'array', items: { type: 'string' } } },
@@ -95,15 +96,19 @@ const PROMPT_INTRO = {
     'Short, simple Spanish sentences for beginners. Each item also needs a "wrong" array of exactly 2 near-miss ' +
     'variants of the same sentence (small word swaps) to use as multiple-choice distractors.',
   SPEAK:
-    'Natural, conversational Spanish sentences (intermediate level) for a speaking/pronunciation practice exercise. Return only the Spanish sentences as plain strings.',
+    'Natural, conversational Spanish sentences (intermediate level) for a speaking/pronunciation practice exercise. ' +
+    'Each item needs the Spanish sentence ("es") and its English translation ("en").',
   SPEAK_EASY:
-    'Short, simple beginner Spanish sentences or phrases for a speaking practice exercise. Return only the Spanish sentences as plain strings.',
+    'Short, simple beginner Spanish sentences or phrases for a speaking practice exercise. ' +
+    'Each item needs the Spanish sentence ("es") and its English translation ("en").',
   GRAMMAR:
     'Spanish verb conjugation drills at intermediate level, covering present/preterite/future/conditional tenses. ' +
-    'Each item needs the infinitive "verb", the "pronoun", the "tense" name, a "sentence" with the verb blanked out as "___", and the correct conjugated "answer".',
+    'Each item needs the infinitive "verb", the "pronoun", the "tense" name, a "sentence" with the verb blanked out as "___", ' +
+    'the correct conjugated "answer", and "en": the English translation of the complete sentence (with the blank filled in by the answer).',
   GRAMMAR_EASY:
     'Spanish present-tense verb conjugation drills for beginners. Each item needs the infinitive "verb", the "pronoun", ' +
-    'a "sentence" with the verb blanked out as "___", the correct "answer", and an "opts" array of exactly 3 strings (the correct answer plus 2 plausible wrong conjugations).',
+    'a "sentence" with the verb blanked out as "___", the correct "answer", an "opts" array of exactly 3 strings (the correct answer ' +
+    'plus 2 plausible wrong conjugations), and "en": the English translation of the complete sentence (with the blank filled in by the answer).',
   IMPROV_TOPICS:
     'Everyday conversation topics in Spanish for a free-talk practice exercise. Each item needs a short "topic" phrase in Spanish and a "prompts" array of exactly 3 follow-up questions in Spanish.',
 };

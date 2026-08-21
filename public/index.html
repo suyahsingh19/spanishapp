@@ -247,6 +247,19 @@ footer{ text-align:center; color: var(--text-faint); font-size: 12.5px; margin-t
 }
 .backup-panel textarea{ width:100%; resize: vertical; }
 
+.details-box{ margin-top: 10px; text-align: center; }
+.details-panel{
+  background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+  padding: 16px 20px; margin-top: 12px; text-align: left; max-height: 320px; overflow-y: auto;
+}
+.details-row{
+  display:flex; justify-content: space-between; gap: 14px; padding: 8px 0;
+  border-bottom: 1px solid var(--line); font-size: 14px;
+}
+.details-row:last-child{ border-bottom: none; }
+.details-es{ color: var(--text); font-weight: 600; }
+.details-en{ color: var(--text-faint); text-align: right; }
+
 .hidden{ display:none !important; }
 .unsupported{ background: var(--bg); border: 1px solid var(--err); border-radius: 10px; padding: 14px 16px; color: var(--text-dim); font-size: 13.5px; }
 </style>
@@ -349,6 +362,10 @@ footer{ text-align:center; color: var(--text-faint); font-size: 12.5px; margin-t
       <div class="dash-card"><div class="dash-num" id="statMastered">0</div><div class="dash-label">Words mastered</div></div>
       <div class="dash-card"><div class="dash-num" id="statDue">0</div><div class="dash-label">Cards due today</div></div>
       <div class="dash-card"><div class="dash-num" id="statStreak">0</div><div class="dash-label">App-day streak</div></div>
+    </div>
+    <div class="details-box">
+      <button class="btn ghost" id="masteredToggle" style="font-size:12.5px;">Show mastered words</button>
+      <div class="details-panel hidden" id="masteredPanel"></div>
     </div>
     <div class="backup-box">
       <button class="btn ghost" id="backupToggle" style="font-size:12.5px;">Manual backup (use if auto-sync isn't working)</button>
@@ -628,6 +645,24 @@ function renderDashboard(){
   renderGap();
   renderOverall(mastered);
   renderTimeline(mastered);
+  renderMasteredList();
+}
+
+function renderMasteredList(){
+  const masteredPanel = document.getElementById('masteredPanel');
+  const toggle = document.getElementById('masteredToggle');
+  const bank = vocabBank(), srs = vocabSRS();
+  const mastered = bank.filter(v => { const s = srs[slugify(v.es)]; return s && s.box >= 4; });
+  toggle.textContent = mastered.length ? `Show mastered words (${mastered.length})` : 'Show mastered words';
+  if(!mastered.length){
+    masteredPanel.innerHTML = `<p class="prompt-sub">No mastered words yet in ${progress.difficulty === 'easy' ? 'Fácil' : 'Difícil'} mode — keep going in Vocabulario.</p>`;
+    return;
+  }
+  masteredPanel.innerHTML = mastered
+    .slice()
+    .sort((a,b) => a.es.localeCompare(b.es))
+    .map(v => `<div class="details-row"><span class="details-es">${v.es}</span><span class="details-en">${v.en}</span></div>`)
+    .join('');
 }
 
 const PHASES = [
@@ -1057,7 +1092,8 @@ function drawSpeakCard(){
     bumpSession();
     return;
   }
-  const text = bank[speakQueue[speakIdx]];
+  const item = bank[speakQueue[speakIdx]];
+  const text = item.es;
   const supported = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
   panel.innerHTML = `
     <div class="panel-head">
@@ -1083,7 +1119,7 @@ function drawSpeakCard(){
       micBtn.classList.add('recording'); micBtn.textContent = '● Listening…';
       recognizer.onresult = (ev)=>{
         const heard = ev.results[0][0].transcript;
-        showSpeakResult(text, heard, easy ? 0.55 : 0.8);
+        showSpeakResult(text, item.en, heard, easy ? 0.55 : 0.8);
       };
       recognizer.onerror = ()=>{
         micBtn.classList.remove('recording'); micBtn.textContent = '● Tap to speak';
@@ -1095,7 +1131,7 @@ function drawSpeakCard(){
   }
 }
 
-function showSpeakResult(target, heard, threshold){
+function showSpeakResult(target, targetEn, heard, threshold){
   const diff = diffWords(target, heard);
   const okCount = diff.filter(d=>d.ok).length;
   const score = diff.length ? okCount/diff.length : 0;
@@ -1109,6 +1145,7 @@ function showSpeakResult(target, heard, threshold){
     <div class="prompt-sub" style="margin-top:10px;">Matched against target:</div>
     <div class="diff-line">${html}</div>
     <div class="feedback ${correct?'correct':'wrong'}">${Math.round(score*100)}% word match ${correct? '— solid.' : '— close, try once more or move on.'}</div>
+    <div class="prompt-example" style="margin-top:10px;">${targetEn}</div>
   `;
   const nextBtn = document.createElement('button');
   nextBtn.className = 'btn primary'; nextBtn.textContent = 'Next →';
@@ -1179,7 +1216,7 @@ function drawGramCard(){
         }
         const full = item.sentence.replace('___', item.answer);
         const fb = document.getElementById('gramFeedback');
-        fb.innerHTML = `<div class="feedback ${correct?'correct':'wrong'}">${correct?'✓ Correcto':'Correct form: '+item.answer} — ${full}</div>${verifyLink}`;
+        fb.innerHTML = `<div class="feedback ${correct?'correct':'wrong'}">${correct?'✓ Correcto':'Correct form: '+item.answer} — ${full}</div><div class="prompt-example">${item.en}</div>${verifyLink}`;
         const nextBtn = document.createElement('button');
         nextBtn.className = 'btn primary'; nextBtn.textContent = 'Next →'; nextBtn.style.marginTop='16px'; nextBtn.style.display='block';
         nextBtn.onclick = ()=>{ gramIdx++; drawGramCard(); renderDashboard(); };
@@ -1207,9 +1244,9 @@ function drawGramCard(){
     const fb = document.getElementById('gramFeedback');
     const full = item.sentence.replace('___', item.answer);
     if(correct){
-      fb.innerHTML = `<div class="feedback correct">✓ Correcto — ${full}</div>${verifyLink}`;
+      fb.innerHTML = `<div class="feedback correct">✓ Correcto — ${full}</div><div class="prompt-example">${item.en}</div>${verifyLink}`;
     } else {
-      fb.innerHTML = `<div class="feedback wrong">Not quite. Correct form: <strong>${item.answer}</strong></div><div class="prompt-example">${full}</div>${verifyLink}`;
+      fb.innerHTML = `<div class="feedback wrong">Not quite. Correct form: <strong>${item.answer}</strong></div><div class="prompt-example">${full}<br>${item.en}</div>${verifyLink}`;
     }
     document.getElementById('gramCheck').disabled = true;
     const nextBtn = document.createElement('button');
@@ -1409,6 +1446,9 @@ document.getElementById('clearSettingsBtn').addEventListener('click', ()=>{
 });
 
 /* ============================= MANUAL BACKUP (export/import fallback) ============================= */
+document.getElementById('masteredToggle').addEventListener('click', ()=>{
+  document.getElementById('masteredPanel').classList.toggle('hidden');
+});
 document.getElementById('backupToggle').addEventListener('click', ()=>{
   document.getElementById('backupPanel').classList.toggle('hidden');
 });
