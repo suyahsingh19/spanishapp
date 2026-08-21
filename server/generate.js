@@ -44,8 +44,8 @@ const SCHEMAS = {
     ['es', 'en']
   ),
   LISTEN_EASY: itemObjectSchema(
-    { es: { type: 'string' }, wrong: { type: 'array', items: { type: 'string' } } },
-    ['es', 'wrong']
+    { es: { type: 'string' }, en: { type: 'string' }, wrong: { type: 'array', items: { type: 'string' } } },
+    ['es', 'en', 'wrong']
   ),
   SPEAK: itemObjectSchema(
     { es: { type: 'string' }, en: { type: 'string' } },
@@ -93,8 +93,9 @@ const PROMPT_INTRO = {
   LISTEN:
     'Natural, conversational Spanish sentences (intermediate level) with an English translation ("en"), suitable for a listening comprehension exercise.',
   LISTEN_EASY:
-    'Short, simple Spanish sentences for beginners. Each item also needs a "wrong" array of exactly 2 near-miss ' +
-    'variants of the same sentence (small word swaps) to use as multiple-choice distractors.',
+    'Short, simple Spanish sentences for beginners. Each item needs the Spanish sentence ("es"), its English ' +
+    'translation ("en"), and a "wrong" array of exactly 2 near-miss variants of the same sentence (small word swaps) ' +
+    'to use as multiple-choice distractors.',
   SPEAK:
     'Natural, conversational Spanish sentences (intermediate level) for a speaking/pronunciation practice exercise. ' +
     'Each item needs the Spanish sentence ("es") and its English translation ("en").',

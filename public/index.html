@@ -1021,7 +1021,7 @@ function drawListenCardHard(bank){
     logRecognition(correct); // listening-to-text = still a recognition/decoding skill
     const fb = document.getElementById('listenFeedback');
     if(correct){
-      fb.innerHTML = `<div class="feedback correct">✓ Exact match.</div>`;
+      fb.innerHTML = `<div class="feedback correct">✓ Exact match.</div><div class="prompt-example">${item.en}</div>`;
     } else {
       fb.innerHTML = `<div class="feedback wrong">Not quite. The sentence was:</div>
         <div class="diff-line">${item.es}</div>

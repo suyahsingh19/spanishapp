@@ -505,56 +505,64 @@
       "wrong": [
         "¿Dónde está el banco?",
         "¿Cuándo está el baño?"
-      ]
+      ],
+      "en": "Where is the bathroom?"
     },
     {
       "es": "Quiero un café, por favor.",
       "wrong": [
         "Quiero un té, por favor.",
         "Quiero más café, por favor."
-      ]
+      ],
+      "en": "I want a coffee, please."
     },
     {
       "es": "¿Cómo te llamas?",
       "wrong": [
         "¿Cómo te llaman?",
         "¿Cómo se llama?"
-      ]
+      ],
+      "en": "What's your name?"
     },
     {
       "es": "Hace mucho calor hoy.",
       "wrong": [
         "Hace mucho frío hoy.",
         "Hizo mucho calor ayer."
-      ]
+      ],
+      "en": "It's very hot today."
     },
     {
       "es": "No entiendo esta palabra.",
       "wrong": [
         "No entiendo esa palabra.",
         "No entiendo estas palabras."
-      ]
+      ],
+      "en": "I don't understand this word."
     },
     {
       "es": "¿A qué hora abre la tienda?",
       "wrong": [
         "¿A qué hora cierra la tienda?",
         "¿A qué hora abre la oficina?"
-      ]
+      ],
+      "en": "What time does the store open?"
     },
     {
       "es": "Necesito ayuda, por favor.",
       "wrong": [
         "Necesito agua, por favor.",
         "Necesito ayuda, señor."
-      ]
+      ],
+      "en": "I need help, please."
     },
     {
       "es": "Vivo cerca de aquí.",
       "wrong": [
         "Vivo lejos de aquí.",
         "Viví cerca de aquí."
-      ]
+      ],
+      "en": "I live near here."
     }
   ],
   "SPEAK": [
